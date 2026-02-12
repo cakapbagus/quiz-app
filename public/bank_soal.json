@@ -1,0 +1,602 @@
+{
+  "Bahasa Indonesia": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Sinonim dari kata 'senang' adalah...",
+          "pg_a": "Sedih",
+          "pg_b": "Gembira",
+          "pg_c": "Marah",
+          "pg_d": "Takut",
+          "jawaban": "B. Gembira",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Manakah penulisan huruf kapital yang benar?",
+          "pg_a": "aku tinggal di jakarta.",
+          "pg_b": "Aku Tinggal Di Jakarta.",
+          "pg_c": "Aku tinggal di Jakarta.",
+          "pg_d": "aku Tinggal di jakarta.",
+          "jawaban": "C. Aku tinggal di Jakarta.",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Antonim dari kata 'panjang' adalah...",
+          "pg_a": "Lebar",
+          "pg_b": "Tinggi",
+          "pg_c": "Pendek",
+          "pg_d": "Besar",
+          "jawaban": "C. Pendek",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Kalimat yang menggunakan kata hubung 'meskipun' dengan benar adalah...",
+          "pg_a": "Dia pergi meskipun hujan deras.",
+          "pg_b": "Dia pergi meskipun dia suka hujan.",
+          "pg_c": "Meskipun dia pergi ke sana.",
+          "pg_d": "Dia meskipun pergi ke pasar.",
+          "jawaban": "A. Dia pergi meskipun hujan deras.",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Manakah kalimat majemuk setara yang benar?",
+          "pg_a": "Ibu memasak karena lapar.",
+          "pg_b": "Ayah membaca koran dan ibu memasak.",
+          "pg_c": "Adik menangis ketika jatuh.",
+          "pg_d": "Dia belajar supaya pintar.",
+          "jawaban": "B. Ayah membaca koran dan ibu memasak.",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Imbuhan 'me-' pada kata 'membaca' berfungsi membentuk kata...",
+          "pg_a": "Kata sifat",
+          "pg_b": "Kata benda",
+          "pg_c": "Kata kerja aktif",
+          "pg_d": "Kata keterangan",
+          "jawaban": "C. Kata kerja aktif",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Majas yang terdapat dalam kalimat 'Angin berbisik lembut di telingaku' adalah...",
+          "pg_a": "Hiperbola",
+          "pg_b": "Personifikasi",
+          "pg_c": "Metafora",
+          "pg_d": "Simile",
+          "jawaban": "B. Personifikasi",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Penulisan tanda baca yang benar dalam kalimat langsung adalah...",
+          "pg_a": "Ibu berkata, saya akan pergi ke pasar.",
+          "pg_b": "Ibu berkata 'Saya akan pergi ke pasar'.",
+          "pg_c": "Ibu berkata, \"Saya akan pergi ke pasar.\"",
+          "pg_d": "Ibu berkata: saya akan pergi ke pasar.",
+          "jawaban": "C. Ibu berkata, \"Saya akan pergi ke pasar.\"",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam paragraf argumentasi, bagian yang berisi pernyataan posisi penulis disebut...",
+          "pg_a": "Deskripsi",
+          "pg_b": "Tesis",
+          "pg_c": "Reorientasi",
+          "pg_d": "Krisis",
+          "jawaban": "B. Tesis",
+          "waktu": 30
+        }
+      ]
+    }
+  ],
+  "English": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "She ___ to school every day at 7 a.m.",
+          "pg_a": "go",
+          "pg_b": "goes",
+          "pg_c": "going",
+          "pg_d": "gone",
+          "jawaban": "B. goes",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Choose the correct synonym of the word \"rapid.\"",
+          "pg_a": "Slow",
+          "pg_b": "Fast",
+          "pg_c": "Weak",
+          "pg_d": "Quiet",
+          "jawaban": "B. Fast",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "If today is Monday, tomorrow will be ___.",
+          "pg_a": "Sunday",
+          "pg_b": "Tuesday",
+          "pg_c": "Wednesday",
+          "pg_d": "Friday",
+          "jawaban": "B. Tuesday",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "The students were exhausted, ___ they continued working on their project until midnight.",
+          "pg_a": "because",
+          "pg_b": "although",
+          "pg_c": "but",
+          "pg_d": "since",
+          "jawaban": "C. but",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Choose the correct sentence.",
+          "pg_a": "She don't like coffee.",
+          "pg_b": "She doesn't likes coffee.",
+          "pg_c": "She doesn't like coffee.",
+          "pg_d": "She didn't likes coffee.",
+          "jawaban": "C. She doesn't like coffee.",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "The book, ___ was written by a young author, became an international bestseller.",
+          "pg_a": "who",
+          "pg_b": "which",
+          "pg_c": "whose",
+          "pg_d": "whom",
+          "jawaban": "B. which",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Had she known about the traffic, she ___ earlier.",
+          "pg_a": "leaves",
+          "pg_b": "left",
+          "pg_c": "would leave",
+          "pg_d": "would have left",
+          "jawaban": "D. would have left",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Choose the sentence with the correct parallel structure.",
+          "pg_a": "She enjoys reading, to swim, and biking.",
+          "pg_b": "She enjoys reading, swimming, and biking.",
+          "pg_c": "She enjoys to read, swimming, and biking.",
+          "pg_d": "She enjoys reading, swim, and biking.",
+          "jawaban": "B. She enjoys reading, swimming, and biking.",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Despite ___ repeatedly warned about the risks, he proceeded with the experiment.",
+          "pg_a": "to be",
+          "pg_b": "being",
+          "pg_c": "be",
+          "pg_d": "been",
+          "jawaban": "B. being",
+          "waktu": 30
+        }
+      ]
+    }
+  ],
+  "Matematika": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Berapa hasil dari 12 × 8?",
+          "pg_a": "86",
+          "pg_b": "96",
+          "pg_c": "106",
+          "pg_d": "116",
+          "jawaban": "B. 96",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Jika x + 5 = 12, maka x = ...",
+          "pg_a": "5",
+          "pg_b": "6",
+          "pg_c": "7",
+          "pg_d": "8",
+          "jawaban": "C. 7",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Berapa persen dari 50 yang sama dengan 25?",
+          "pg_a": "25%",
+          "pg_b": "50%",
+          "pg_c": "75%",
+          "pg_d": "100%",
+          "jawaban": "B. 50%",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Jika luas persegi panjang adalah 48 cm² dan panjangnya 8 cm, berapa lebarnya?",
+          "pg_a": "4 cm",
+          "pg_b": "5 cm",
+          "pg_c": "6 cm",
+          "pg_d": "7 cm",
+          "jawaban": "C. 6 cm",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Persamaan garis yang melalui titik (2, 3) dengan gradien 2 adalah...",
+          "pg_a": "y = 2x + 1",
+          "pg_b": "y = 2x - 1",
+          "pg_c": "y = 2x + 3",
+          "pg_d": "y = 2x - 3",
+          "jawaban": "B. y = 2x - 1",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Nilai dari √144 + √25 adalah...",
+          "pg_a": "15",
+          "pg_b": "17",
+          "pg_c": "19",
+          "pg_d": "21",
+          "jawaban": "B. 17",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Jika f(x) = x² + 3x - 4, nilai f(3) adalah...",
+          "pg_a": "12",
+          "pg_b": "14",
+          "pg_c": "16",
+          "pg_d": "18",
+          "jawaban": "B. 14",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Suatu barisan aritmetika memiliki suku pertama 5 dan beda 3. Suku ke-10 adalah...",
+          "pg_a": "30",
+          "pg_b": "32",
+          "pg_c": "35",
+          "pg_d": "38",
+          "jawaban": "B. 32",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Hasil dari log₂(32) adalah...",
+          "pg_a": "4",
+          "pg_b": "5",
+          "pg_c": "6",
+          "pg_d": "7",
+          "jawaban": "B. 5",
+          "waktu": 30
+        }
+      ]
+    }
+  ],
+  "PAI": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Rukun Islam yang pertama adalah...",
+          "pg_a": "Shalat",
+          "pg_b": "Puasa",
+          "pg_c": "Syahadat",
+          "pg_d": "Zakat",
+          "jawaban": "C. Syahadat",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Berapa jumlah rakaat shalat Maghrib?",
+          "pg_a": "2",
+          "pg_b": "3",
+          "pg_c": "4",
+          "pg_d": "5",
+          "jawaban": "B. 3",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Kitab suci umat Islam adalah...",
+          "pg_a": "Injil",
+          "pg_b": "Taurat",
+          "pg_c": "Zabur",
+          "pg_d": "Al-Quran",
+          "jawaban": "D. Al-Quran",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Nabi yang mendapat gelar 'Ulul Azmi' berjumlah...",
+          "pg_a": "3 nabi",
+          "pg_b": "4 nabi",
+          "pg_c": "5 nabi",
+          "pg_d": "6 nabi",
+          "jawaban": "C. 5 nabi",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Zakat fitrah wajib dikeluarkan sebesar...",
+          "pg_a": "1,5 kg beras",
+          "pg_b": "2,5 kg beras",
+          "pg_c": "3,5 kg beras",
+          "pg_d": "4,5 kg beras",
+          "jawaban": "B. 2,5 kg beras",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Surat Al-Fatihah terdiri dari berapa ayat?",
+          "pg_a": "5 ayat",
+          "pg_b": "6 ayat",
+          "pg_c": "7 ayat",
+          "pg_d": "8 ayat",
+          "jawaban": "C. 7 ayat",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam fiqih, hukum yang menyatakan sesuatu boleh dikerjakan dan boleh ditinggalkan disebut...",
+          "pg_a": "Wajib",
+          "pg_b": "Sunnah",
+          "pg_c": "Mubah",
+          "pg_d": "Makruh",
+          "jawaban": "C. Mubah",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Istilah 'Ijma' dalam ushul fiqih berarti...",
+          "pg_a": "Kesepakatan ulama dalam suatu masa",
+          "pg_b": "Perumpamaan dari Al-Quran",
+          "pg_c": "Pendapat seorang ulama",
+          "pg_d": "Hadis yang diriwayatkan banyak orang",
+          "jawaban": "A. Kesepakatan ulama dalam suatu masa",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Peristiwa Isra' Mi'raj terjadi pada tahun...",
+          "pg_a": "9 Hijriah",
+          "pg_b": "10 Hijriah",
+          "pg_c": "11 Hijriah",
+          "pg_d": "621 Masehi",
+          "jawaban": "D. 621 Masehi",
+          "waktu": 30
+        }
+      ]
+    }
+  ],
+  "IT": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "CPU adalah singkatan dari...",
+          "pg_a": "Central Power Unit",
+          "pg_b": "Central Processing Unit",
+          "pg_c": "Computer Processing Unit",
+          "pg_d": "Core Processing Utility",
+          "jawaban": "B. Central Processing Unit",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Ekstensi file gambar yang paling umum adalah...",
+          "pg_a": ".doc",
+          "pg_b": ".mp3",
+          "pg_c": ".jpg",
+          "pg_d": ".exe",
+          "jawaban": "C. .jpg",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "WWW adalah singkatan dari...",
+          "pg_a": "World Wide Web",
+          "pg_b": "World Web Window",
+          "pg_c": "Wide World Website",
+          "pg_d": "Web World Wide",
+          "jawaban": "A. World Wide Web",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Perangkat yang mengubah sinyal digital menjadi sinyal analog untuk transmisi internet disebut...",
+          "pg_a": "Router",
+          "pg_b": "Switch",
+          "pg_c": "Modem",
+          "pg_d": "Hub",
+          "jawaban": "C. Modem",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam pemrograman, perintah yang digunakan untuk mencetak output di Python adalah...",
+          "pg_a": "echo()",
+          "pg_b": "console.log()",
+          "pg_c": "print()",
+          "pg_d": "System.out.println()",
+          "jawaban": "C. print()",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Protokol yang digunakan untuk mengirim email adalah...",
+          "pg_a": "HTTP",
+          "pg_b": "FTP",
+          "pg_c": "SMTP",
+          "pg_d": "SSH",
+          "jawaban": "C. SMTP",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam algoritma sorting, kompleksitas waktu rata-rata dari Quick Sort adalah...",
+          "pg_a": "O(n)",
+          "pg_b": "O(n log n)",
+          "pg_c": "O(n²)",
+          "pg_d": "O(log n)",
+          "jawaban": "B. O(n log n)",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam database relasional, perintah SQL untuk menggabungkan dua tabel berdasarkan kondisi tertentu adalah...",
+          "pg_a": "UNION",
+          "pg_b": "MERGE",
+          "pg_c": "JOIN",
+          "pg_d": "COMBINE",
+          "jawaban": "C. JOIN",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam jaringan komputer, subnetting digunakan untuk...",
+          "pg_a": "Meningkatkan kecepatan internet",
+          "pg_b": "Membagi jaringan besar menjadi jaringan yang lebih kecil",
+          "pg_c": "Mengenkripsi data yang dikirim",
+          "pg_d": "Memperbesar bandwidth",
+          "jawaban": "B. Membagi jaringan besar menjadi jaringan yang lebih kecil",
+          "waktu": 30
+        }
+      ]
+    }
+  ],
+  "IPA": [
+    {
+      "Receh": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Planet yang paling dekat dengan Matahari adalah...",
+          "pg_a": "Venus",
+          "pg_b": "Bumi",
+          "pg_c": "Merkurius",
+          "pg_d": "Mars",
+          "jawaban": "C. Merkurius",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Proses perubahan air menjadi uap air disebut...",
+          "pg_a": "Kondensasi",
+          "pg_b": "Evaporasi",
+          "pg_c": "Presipitasi",
+          "pg_d": "Sublimasi",
+          "jawaban": "B. Evaporasi",
+          "waktu": 10
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Simbol kimia untuk air adalah...",
+          "pg_a": "O₂",
+          "pg_b": "CO₂",
+          "pg_c": "H₂O",
+          "pg_d": "NaCl",
+          "jawaban": "C. H₂O",
+          "waktu": 10
+        }
+      ],
+      "Sedang": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Organel sel yang berfungsi sebagai tempat fotosintesis adalah...",
+          "pg_a": "Mitokondria",
+          "pg_b": "Ribosom",
+          "pg_c": "Kloroplas",
+          "pg_d": "Vakuola",
+          "jawaban": "C. Kloroplas",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Hukum Newton ke-2 menyatakan bahwa gaya sama dengan...",
+          "pg_a": "Massa × Kecepatan",
+          "pg_b": "Massa × Percepatan",
+          "pg_c": "Berat × Percepatan",
+          "pg_d": "Volume × Massa",
+          "jawaban": "B. Massa × Percepatan",
+          "waktu": 20
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Proses pembelahan sel yang menghasilkan dua sel anak identik disebut...",
+          "pg_a": "Meiosis",
+          "pg_b": "Mitosis",
+          "pg_c": "Fertilisasi",
+          "pg_d": "Diferensiasi",
+          "jawaban": "B. Mitosis",
+          "waktu": 20
+        }
+      ],
+      "Sulit": [
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Reaksi yang membutuhkan energi dari lingkungan disebut...",
+          "pg_a": "Reaksi eksoterm",
+          "pg_b": "Reaksi endoterm",
+          "pg_c": "Reaksi redoks",
+          "pg_d": "Reaksi katalitik",
+          "jawaban": "B. Reaksi endoterm",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Dalam sistem periodik, unsur yang memiliki nomor atom 6 adalah...",
+          "pg_a": "Nitrogen",
+          "pg_b": "Oksigen",
+          "pg_c": "Karbon",
+          "pg_d": "Boron",
+          "jawaban": "C. Karbon",
+          "waktu": 30
+        },
+        {
+          "tipe": "Pilihan Ganda",
+          "soal": "Teori evolusi yang menyatakan bahwa sifat yang diperoleh selama hidup dapat diwariskan dikemukakan oleh...",
+          "pg_a": "Charles Darwin",
+          "pg_b": "Gregor Mendel",
+          "pg_c": "Jean-Baptiste Lamarck",
+          "pg_d": "Alfred Russel Wallace",
+          "jawaban": "C. Jean-Baptiste Lamarck",
+          "waktu": 30
+        }
+      ]
+    }
+  ]
+}
