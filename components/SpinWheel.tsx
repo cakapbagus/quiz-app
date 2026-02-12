@@ -2,348 +2,313 @@
 import { useState, useRef, useCallback } from 'react';
 import { Difficulty } from '@/hooks/useQuizSession';
 
-const CATEGORIES = ['Bahasa Indonesia', 'English', 'Matematika', 'PAI', 'IT', 'IPA'];
-const CATEGORY_ICONS = ['📝', '🌍', '🔢', '🕌', '💻', '🔬'];
-const SEGMENT_COLORS = [
-  ['#ff6b6b', '#ff4444'],
-  ['#4d96ff', '#2277ee'],
-  ['#ffd93d', '#ffbb00'],
-  ['#6bcb77', '#44aa55'],
-  ['#c77dff', '#aa55ee'],
-  ['#ff9a3c', '#ee7700'],
+const CATEGORIES   = ['Bahasa Indonesia', 'English', 'Matematika', 'PAI', 'IT', 'IPA'];
+const CAT_ICONS    = ['📝', '🌍', '🔢', '🕌', '💻', '🔬'];
+const SEG_COLORS   = [
+  ['#ff6b6b', '#e84040'],
+  ['#4d96ff', '#1a75f0'],
+  ['#ffd93d', '#f0bb00'],
+  ['#6bcb77', '#3aaa48'],
+  ['#c77dff', '#a84eed'],
+  ['#ff9a3c', '#e87a10'],
 ];
 
-const DIFFICULTIES: {
-  key: Difficulty;
-  emoji: string;
-  label: string;
-  gradient: string;
-  glow: string;
-}[] = [
-  { key: 'Receh',  emoji: '😄', label: 'Receh',  gradient: 'linear-gradient(135deg,#6bcb77,#44aa55)', glow: 'rgba(107,203,119,0.5)' },
-  { key: 'Sedang', emoji: '🤔', label: 'Sedang', gradient: 'linear-gradient(135deg,#ffd93d,#ffaa00)', glow: 'rgba(255,217,61,0.5)'  },
-  { key: 'Sulit',  emoji: '🔥', label: 'Sulit',  gradient: 'linear-gradient(135deg,#ff6b6b,#ee2244)', glow: 'rgba(255,107,107,0.5)' },
+const DIFFS: { key: Difficulty; emoji: string; label: string; gradient: string; glow: string }[] = [
+  { key: 'Receh',  emoji: '😄', label: 'Receh',  gradient: 'linear-gradient(135deg,#6bcb77,#3aaa48)', glow: '#6bcb77' },
+  { key: 'Sedang', emoji: '🤔', label: 'Sedang', gradient: 'linear-gradient(135deg,#ffd93d,#f0a800)', glow: '#ffd93d' },
+  { key: 'Sulit',  emoji: '🔥', label: 'Sulit',  gradient: 'linear-gradient(135deg,#ff6b6b,#e02020)', glow: '#ff6b6b' },
 ];
 
-interface SpinWheelProps {
+interface Props {
   onDifficultySelected: (category: string, difficulty: Difficulty) => void;
   usedQuestions?: Record<string, Record<string, number[]>>;
   difficultyTimes?: Record<string, Record<string, number>>;
+  /** poolSizes[category][difficulty] = total questions in pool */
+  poolSizes?: Record<string, Record<string, number>>;
 }
 
-export default function SpinWheel({ onDifficultySelected, usedQuestions = {}, difficultyTimes = {} }: SpinWheelProps) {
-  const usedPerCategory = (cat: string) =>
-    Object.values(usedQuestions[cat] ?? {}).flat().length;
+export default function SpinWheel({ onDifficultySelected, usedQuestions = {}, difficultyTimes = {}, poolSizes = {} }: Props) {
+  const [rotation, setRotation]   = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
+  const rotRef = useRef(0);
 
-  const [rotation, setRotation]       = useState(0);
-  const [isSpinning, setIsSpinning]   = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [showResult, setShowResult]   = useState(false);
-  const currentRotationRef            = useRef(0);
-
+  /* ── Spin ── */
   const spin = useCallback(() => {
     if (isSpinning) return;
     setIsSpinning(true);
-    setShowResult(false);
-    setSelectedIndex(null);
+    // Reset selection while spinning
+    setSelectedIdx(null);
 
-    const numSegments  = CATEGORIES.length;
-    const segmentAngle = 360 / numSegments;
-    const winningIndex = Math.floor(Math.random() * numSegments);
-    const extraSpins   = (4 + Math.floor(Math.random() * 4)) * 360;
-    const targetAngle  = 360 - (winningIndex * segmentAngle + segmentAngle / 2);
-    const totalRotation = currentRotationRef.current + extraSpins + targetAngle - (currentRotationRef.current % 360);
+    const seg   = 360 / CATEGORIES.length;
+    const winner = Math.floor(Math.random() * CATEGORIES.length);
+    const extra  = (5 + Math.floor(Math.random() * 4)) * 360;
+    const target = 360 - (winner * seg + seg / 2);
+    const total  = rotRef.current + extra + target - (rotRef.current % 360);
+    rotRef.current = total;
+    setRotation(total);
 
-    currentRotationRef.current = totalRotation;
-    setRotation(totalRotation);
-
-    setTimeout(() => {
-      setIsSpinning(false);
-      setSelectedIndex(winningIndex);
-      setShowResult(true);
-    }, 4500);
+    setTimeout(() => { setIsSpinning(false); setSelectedIdx(winner); }, 4200);
   }, [isSpinning]);
 
-  const handleDifficulty = useCallback((difficulty: Difficulty) => {
-    if (selectedIndex === null) return;
-    onDifficultySelected(CATEGORIES[selectedIndex], difficulty);
-  }, [selectedIndex, onDifficultySelected]);
+  /* ── Difficulty pick ── */
+  const pickDiff = useCallback((diff: Difficulty) => {
+    if (selectedIdx === null) return;
+    onDifficultySelected(CATEGORIES[selectedIdx], diff);
+  }, [selectedIdx, onDifficultySelected]);
 
-  // SVG geometry
-  const size = 320;
-  const center = size / 2;
-  const radius = size / 2 - 10;
-  const numSegments = CATEGORIES.length;
-  const segmentAngle = (2 * Math.PI) / numSegments;
+  /* ── SVG geometry ── */
+  const S = 480, C = S / 2, R = S / 2 - 8;
+  const segAngle = (2 * Math.PI) / CATEGORIES.length;
 
-  const createSegmentPath = (index: number) => {
-    const startAngle = index * segmentAngle - Math.PI / 2;
-    const endAngle   = startAngle + segmentAngle;
-    const x1 = center + radius * Math.cos(startAngle);
-    const y1 = center + radius * Math.sin(startAngle);
-    const x2 = center + radius * Math.cos(endAngle);
-    const y2 = center + radius * Math.sin(endAngle);
-    return `M ${center} ${center} L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} Z`;
+  const segPath = (i: number) => {
+    const a0 = i * segAngle - Math.PI / 2;
+    const a1 = a0 + segAngle;
+    return `M${C},${C} L${C + R * Math.cos(a0)},${C + R * Math.sin(a0)} A${R},${R},0,0,1,${C + R * Math.cos(a1)},${C + R * Math.sin(a1)} Z`;
   };
 
-  const getTextPosition = (index: number) => {
-    const angle      = index * segmentAngle - Math.PI / 2 + segmentAngle / 2;
-    const textRadius = radius * 0.62;
-    return {
-      x: center + textRadius * Math.cos(angle),
-      y: center + textRadius * Math.sin(angle),
-      angle: (index * 360 / numSegments) + (360 / numSegments / 2),
-    };
+  const textPos = (i: number, rFrac: number) => {
+    const a = i * segAngle - Math.PI / 2 + segAngle / 2;
+    return { x: C + R * rFrac * Math.cos(a), y: C + R * rFrac * Math.sin(a), rot: (i * 360 / CATEGORIES.length) + (180 / CATEGORIES.length) };
   };
 
-  const getIconPosition = (index: number) => {
-    const angle      = index * segmentAngle - Math.PI / 2 + segmentAngle / 2;
-    const iconRadius = radius * 0.85;
-    return {
-      x: center + iconRadius * Math.cos(angle),
-      y: center + iconRadius * Math.sin(angle),
-    };
-  };
-
-  const selectedCat    = selectedIndex !== null ? CATEGORIES[selectedIndex] : null;
-  const selectedColor  = selectedIndex !== null ? SEGMENT_COLORS[selectedIndex] : null;
-  const selectedIcon   = selectedIndex !== null ? CATEGORY_ICONS[selectedIndex] : null;
-  const catTimes       = selectedCat ? difficultyTimes[selectedCat] : {};
+  const selCat   = selectedIdx !== null ? CATEGORIES[selectedIdx] : null;
+  const selColor = selectedIdx !== null ? SEG_COLORS[selectedIdx] : null;
 
   return (
-    <div className="flex flex-col items-center gap-6" style={{ maxWidth: 620, width: '100%' }}>
+    <div className="flex flex-col items-center w-full" style={{ maxWidth: 700, gap: 0 }}>
 
       {/* ── Title ── */}
-      <div className="text-center">
-        <h1 style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: 'clamp(1.75rem, 5vw, 2.75rem)', lineHeight: 1.1 }}>
-          <span style={{ background: 'linear-gradient(90deg,#4d96ff,#c77dff,#ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-            Putar Roda
-          </span>
-          <br />
-          <span style={{ color: '#f0f0f8' }}>Pilih Kategori Soal!</span>
+      <div className="text-center mb-6">
+        <h1 style={{ fontFamily: 'Syne,sans-serif', fontWeight: 800, fontSize: 'clamp(1.6rem,5vw,2.8rem)', lineHeight: 1.1, color: '#f0f0f8' }}>
+          <span style={{ background: 'linear-gradient(90deg,#4d96ff,#c77dff,#ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Putar Roda</span>
+          {' '}Pilih Kategori!
         </h1>
-        {!showResult && (
-          <p style={{ color: '#9898b8', marginTop: 10, fontFamily: 'Nunito, sans-serif' }}>
-            Klik tombol putar dan lihat kategori mana yang terpilih
-          </p>
-        )}
       </div>
 
-      {/* ── Wheel ── */}
-      <div
-        className="relative"
-        style={{
-          filter: isSpinning
-            ? 'drop-shadow(0 0 30px rgba(77,150,255,0.5))'
-            : showResult && selectedColor
-            ? `drop-shadow(0 0 25px ${selectedColor[0]}66)`
-            : 'drop-shadow(0 0 15px rgba(77,150,255,0.2))',
-          transition: 'filter 0.6s ease',
-        }}
-      >
-        {/* Pointer */}
-        <div className="absolute left-1/2 top-0 z-20"
-          style={{ transform: 'translateX(-50%) translateY(-8px)', filter: 'drop-shadow(0 0 10px rgba(255,217,61,0.8))' }}>
-          <svg width="28" height="36" viewBox="0 0 28 36">
-            <polygon points="14,2 26,32 14,26 2,32" fill="#ffd93d" stroke="#0a0a14" strokeWidth="2" />
+      {/* ── Wheel + centre spin button (pickerwheel style) ── */}
+      <div className="relative flex items-center justify-center w-full"
+        style={{ maxWidth: 520, aspectRatio: '1', margin: '0 auto' }}>
+
+        {/* Outer glow ring */}
+        <div className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            boxShadow: isSpinning
+              ? '0 0 60px rgba(77,150,255,0.5), 0 0 120px rgba(199,125,255,0.3)'
+              : selColor
+              ? `0 0 40px ${selColor[0]}55, 0 0 80px ${selColor[0]}22`
+              : '0 0 30px rgba(77,150,255,0.2)',
+            borderRadius: '50%',
+            transition: 'box-shadow 0.8s ease',
+          }}
+        />
+
+        {/* Top pointer */}
+        <div className="absolute z-20" style={{ top: -18, left: '50%', transform: 'translateX(-50%)', filter: 'drop-shadow(0 0 8px #ffd93d)' }}>
+          <svg width="32" height="42" viewBox="0 0 32 42">
+            <polygon points="16,2 30,38 16,28 2,38" fill="#ffd93d" stroke="#0a0a14" strokeWidth="2.5" />
           </svg>
         </div>
 
-        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ borderRadius: '50%', display: 'block' }}>
+        {/* The wheel SVG */}
+        <svg width="100%" height="100%" viewBox={`0 0 ${S} ${S}`} style={{ display: 'block', borderRadius: '50%' }}>
           <defs>
-            {SEGMENT_COLORS.map((colors, i) => (
-              <radialGradient key={i} id={`grad${i}`} cx="30%" cy="30%" r="70%">
-                <stop offset="0%" stopColor={colors[0]} />
-                <stop offset="100%" stopColor={colors[1]} />
+            {SEG_COLORS.map(([c1, c2], i) => (
+              <radialGradient key={i} id={`g${i}`} cx="35%" cy="35%" r="75%">
+                <stop offset="0%" stopColor={c1} />
+                <stop offset="100%" stopColor={c2} />
               </radialGradient>
             ))}
+            <filter id="textShadow">
+              <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="rgba(0,0,0,0.6)" />
+            </filter>
           </defs>
 
           <g style={{
-            transformOrigin: `${center}px ${center}px`,
+            transformOrigin: `${C}px ${C}px`,
             transform: `rotate(${rotation}deg)`,
-            transition: isSpinning ? 'transform 4.5s cubic-bezier(0.17,0.67,0.12,0.99)' : 'none',
+            transition: isSpinning ? 'transform 4.2s cubic-bezier(0.15,0.6,0.1,1)' : 'none',
           }}>
             {/* Segments */}
             {CATEGORIES.map((_, i) => (
-              <path key={i} d={createSegmentPath(i)} fill={`url(#grad${i})`} stroke="#0a0a14" strokeWidth="3" />
+              <path key={i} d={segPath(i)} fill={`url(#g${i})`} stroke="#0a0a14" strokeWidth="3" />
             ))}
-            {/* Labels */}
-            {CATEGORIES.map((cat, i) => {
-              const pos   = getTextPosition(i);
-              const short = cat.length > 9 ? cat.substring(0, 8) + '…' : cat;
+
+            {/* Icons (outer ring) */}
+            {CAT_ICONS.map((icon, i) => {
+              const p = textPos(i, 0.82);
               return (
-                <text key={i} x={pos.x} y={pos.y + 4} textAnchor="middle" dominantBaseline="middle"
-                  fill="white" fontSize="10" fontFamily="Syne,sans-serif" fontWeight="700"
-                  transform={`rotate(${pos.angle},${pos.x},${pos.y})`}
-                  style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.5))' }}>
-                  {short}
-                </text>
-              );
-            })}
-            {/* Icons */}
-            {CATEGORY_ICONS.map((icon, i) => {
-              const pos = getIconPosition(i);
-              return (
-                <text key={i} x={pos.x} y={pos.y + 5} textAnchor="middle" dominantBaseline="middle"
-                  fontSize="14" transform={`rotate(${(i * 360 / numSegments) + (360 / numSegments / 2)},${pos.x},${pos.y})`}>
+                <text key={i} x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
+                  fontSize="22" transform={`rotate(${p.rot},${p.x},${p.y})`}>
                   {icon}
                 </text>
               );
             })}
-            {/* Center */}
-            <circle cx={center} cy={center} r="30" fill="#0a0a14" stroke="rgba(255,255,255,0.15)" strokeWidth="2" />
-            <circle cx={center} cy={center} r="20" fill="url(#grad0)" opacity="0.8" />
-            <text x={center} y={center + 5} textAnchor="middle" dominantBaseline="middle" fontSize="16">🎡</text>
+
+            {/* Labels */}
+            {CATEGORIES.map((cat, i) => {
+              const p     = textPos(i, 0.57);
+              const words = cat.split(' ');
+              return (
+                <g key={i} transform={`rotate(${p.rot},${p.x},${p.y})`} filter="url(#textShadow)">
+                  {words.length === 1 ? (
+                    <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
+                      fill="white" fontSize="13" fontFamily="Syne,sans-serif" fontWeight="800">
+                      {cat}
+                    </text>
+                  ) : (
+                    <>
+                      <text x={p.x} y={p.y - 7} textAnchor="middle" dominantBaseline="middle"
+                        fill="white" fontSize="12" fontFamily="Syne,sans-serif" fontWeight="800">
+                        {words[0]}
+                      </text>
+                      <text x={p.x} y={p.y + 8} textAnchor="middle" dominantBaseline="middle"
+                        fill="white" fontSize="12" fontFamily="Syne,sans-serif" fontWeight="800">
+                        {words.slice(1).join(' ')}
+                      </text>
+                    </>
+                  )}
+                </g>
+              );
+            })}
+
+            {/* Centre hub */}
+            <circle cx={C} cy={C} r="54" fill="#0a0a14" stroke="rgba(255,255,255,0.12)" strokeWidth="3" />
           </g>
-          <circle cx={center} cy={center} r={radius + 5} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2" />
+
+          {/* Outer decorative ring */}
+          <circle cx={C} cy={C} r={R + 4} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="3" />
         </svg>
+
+        {/* ── Centre SPIN button (sits on top of hub, like pickerwheel) ── */}
+        <button
+          onClick={spin}
+          disabled={isSpinning}
+          className="absolute flex flex-col items-center justify-center"
+          style={{
+            width: 100, height: 100,
+            borderRadius: '50%',
+            background: isSpinning
+              ? 'radial-gradient(circle,#2a2a48,#1a1a30)'
+              : 'radial-gradient(circle,#4d96ff,#2255cc)',
+            border: `4px solid ${isSpinning ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.35)'}`,
+            boxShadow: isSpinning
+              ? '0 0 20px rgba(77,150,255,0.2)'
+              : '0 0 30px rgba(77,150,255,0.6), 0 4px 16px rgba(0,0,0,0.5)',
+            cursor: isSpinning ? 'default' : 'pointer',
+            transition: 'all 0.3s',
+            zIndex: 30,
+            transform: 'translate(-50%,-50%)',
+            top: '50%', left: '50%',
+          }}
+          onMouseEnter={e => { if (!isSpinning) { const el = e.currentTarget as HTMLElement; el.style.transform='translate(-50%,-50%) scale(1.1)'; el.style.boxShadow='0 0 40px rgba(77,150,255,0.8), 0 4px 20px rgba(0,0,0,0.6)'; }}}
+          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.transform='translate(-50%,-50%) scale(1)'; el.style.boxShadow=isSpinning?'0 0 20px rgba(77,150,255,0.2)':'0 0 30px rgba(77,150,255,0.6), 0 4px 16px rgba(0,0,0,0.5)'; }}
+        >
+          {isSpinning ? (
+            <>
+              <span style={{ fontSize: 22, animation: 'spinIcon 0.8s linear infinite' }}>⚙️</span>
+              <span style={{ color: '#9898b8', fontFamily: 'Syne,sans-serif', fontWeight: 700, fontSize: '0.6rem', marginTop: 2, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Putar...</span>
+            </>
+          ) : (
+            <>
+              <span style={{ fontSize: 26 }}>🎲</span>
+              <span style={{ color: 'white', fontFamily: 'Syne,sans-serif', fontWeight: 800, fontSize: '0.65rem', marginTop: 2, letterSpacing: '0.08em', textTransform: 'uppercase' }}>PUTAR!</span>
+            </>
+          )}
+        </button>
       </div>
 
-      {/* ── POST-SPIN: result + re-spin + difficulty buttons ── */}
-      {showResult && selectedIndex !== null && selectedCat && selectedColor ? (
-        <div
-          className="flex flex-col items-center gap-5 w-full"
-          style={{ animation: 'resultReveal 0.5s cubic-bezier(0.34,1.56,0.64,1)' }}
-        >
-          {/* Selected category banner */}
-          <div
-            className="flex items-center gap-3 px-6 py-3 rounded-2xl w-full justify-center"
-            style={{
-              background: `${selectedColor[0]}18`,
-              border: `2px solid ${selectedColor[0]}55`,
-            }}
-          >
-            <span style={{ fontSize: '2rem' }}>{selectedIcon}</span>
+      {/* ── Result: category banner + difficulty buttons ── */}
+      {!isSpinning && selectedIdx !== null && selCat && selColor && (
+        <div className="flex flex-col items-center gap-5 w-full mt-8"
+          style={{ animation: 'resultReveal 0.45s cubic-bezier(0.34,1.56,0.64,1)' }}>
+
+          {/* Category banner */}
+          <div className="flex items-center gap-3 px-7 py-4 rounded-2xl"
+            style={{ background:`${selColor[0]}18`, border:`2px solid ${selColor[0]}55`, width:'100%', maxWidth:480, justifyContent:'center' }}>
+            <span style={{ fontSize: '2.2rem' }}>{CAT_ICONS[selectedIdx]}</span>
             <div>
-              <div style={{ fontFamily: 'Syne,sans-serif', fontWeight: 800, fontSize: '1.35rem', color: selectedColor[0] }}>
-                {selectedCat}
+              <div style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,4vw,1.6rem)', color:selColor[0] }}>
+                {selCat}
               </div>
-              {usedPerCategory(selectedCat) > 0 && (
-                <div style={{ fontSize: '0.7rem', fontFamily: 'Space Mono,monospace', color: selectedColor[0], opacity: 0.7 }}>
-                  ✓ {usedPerCategory(selectedCat)} soal sudah terpakai
+              {Object.values(usedQuestions[selCat] ?? {}).flat().length > 0 && (
+                <div style={{ fontSize:'0.7rem', fontFamily:'Space Mono,monospace', color:selColor[0], opacity:0.7 }}>
+                  ✓ {Object.values(usedQuestions[selCat] ?? {}).flat().length} soal sudah terpakai
                 </div>
               )}
             </div>
           </div>
 
-          {/* ── Difficulty picker inline ── */}
-          <div className="w-full">
-            <p style={{ color: '#9898b8', fontFamily: 'Nunito,sans-serif', textAlign: 'center', marginBottom: 12, fontSize: '0.9rem' }}>
-              Pilih tingkat kesulitan soal:
-            </p>
-            <div className="grid grid-cols-3 gap-3 w-full">
-              {DIFFICULTIES.map(diff => {
-                const timeVal = catTimes?.[diff.key];
-                const timeLabel = timeVal ? `${timeVal}s` : '…';
-                return (
-                  <button
-                    key={diff.key}
-                    onClick={() => handleDifficulty(diff.key)}
-                    className="relative flex flex-col items-center gap-2 py-4 px-3 rounded-2xl"
-                    style={{
-                      background: 'rgba(255,255,255,0.04)',
-                      border: '2px solid rgba(255,255,255,0.09)',
-                      cursor: 'pointer',
-                      transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transform = 'translateY(-5px) scale(1.04)';
-                      el.style.background = 'rgba(255,255,255,0.08)';
-                      el.style.boxShadow = `0 12px 32px ${diff.glow}`;
-                      el.style.borderColor = diff.glow.replace('0.5', '0.7');
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transform = '';
-                      el.style.background = 'rgba(255,255,255,0.04)';
-                      el.style.boxShadow = '';
-                      el.style.borderColor = 'rgba(255,255,255,0.09)';
-                    }}
-                  >
-                    {/* Gradient icon */}
-                    <div
-                      className="flex items-center justify-center w-10 h-10 rounded-xl text-xl"
-                      style={{ background: diff.gradient, boxShadow: `0 4px 12px ${diff.glow}` }}
-                    >
-                      {diff.emoji}
-                    </div>
-                    {/* Label */}
-                    <span style={{ fontFamily: 'Syne,sans-serif', fontWeight: 800, fontSize: '0.95rem', color: '#f0f0f8' }}>
-                      {diff.label}
+          {/* Difficulty buttons */}
+          <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif', fontSize:'0.95rem', textAlign:'center' }}>
+            Pilih tingkat kesulitan:
+          </p>
+          <div className="grid grid-cols-3 gap-4 w-full" style={{ maxWidth: 480 }}>
+            {DIFFS.map((d, di) => {
+              const totalPool = poolSizes[selCat]?.[d.key] ?? 0;
+              const used      = usedQuestions[selCat]?.[d.key]?.length ?? 0;
+              // Disabled only when pool is known (>0 in poolSizes) AND all used
+              const exhausted = totalPool > 0 && used >= totalPool;
+              const noPool    = totalPool === 0 && Object.keys(poolSizes).length > 0;
+              const disabled  = exhausted || noPool;
+
+              return (
+                <button
+                  key={d.key}
+                  disabled={disabled}
+                  onClick={() => pickDiff(d.key)}
+                  className="flex flex-col items-center gap-2 py-5 px-3 rounded-2xl relative"
+                  style={{
+                    background: disabled ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.05)',
+                    border: `2px solid ${disabled ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.1)'}`,
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    opacity: disabled ? 0.45 : 1,
+                    transition: 'all 0.25s cubic-bezier(0.34,1.56,0.64,1)',
+                    animation: `fadeInUp 0.4s ease ${di * 0.08}s both`,
+                  }}
+                  onMouseEnter={e => {
+                    if (disabled) return;
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform = 'translateY(-6px) scale(1.05)';
+                    el.style.background = 'rgba(255,255,255,0.1)';
+                    el.style.boxShadow  = `0 16px 40px ${d.glow}44`;
+                    el.style.borderColor = `${d.glow}88`;
+                  }}
+                  onMouseLeave={e => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.transform  = '';
+                    el.style.background = disabled ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.05)';
+                    el.style.boxShadow  = '';
+                    el.style.borderColor = disabled ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.1)';
+                  }}
+                >
+                  <div className="flex items-center justify-center w-12 h-12 rounded-xl text-2xl"
+                    style={{ background: disabled ? 'rgba(255,255,255,0.05)' : d.gradient, boxShadow: disabled ? 'none' : `0 4px 14px ${d.glow}55` }}>
+                    {d.emoji}
+                  </div>
+                  <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'1rem', color: disabled ? '#666' : '#f0f0f8' }}>
+                    {d.label}
+                  </span>
+                  {disabled && (
+                    <span style={{ fontSize:'0.65rem', color:'#666', fontFamily:'Space Mono,monospace' }}>
+                      {noPool ? 'Tidak ada soal' : 'Semua terpakai'}
                     </span>
-                    {/* Time pill */}
-                    <span
-                      className="text-xs px-2 py-0.5 rounded-full"
-                      style={{ background: diff.gradient, color: 'white', fontFamily: 'Space Mono,monospace', fontWeight: 700, fontSize: '0.7rem' }}
-                    >
-                      ⏱ {timeLabel}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
-          {/* ── Re-spin button ── */}
-          <button
-            onClick={spin}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm"
-            style={{
-              background: 'rgba(255,255,255,0.06)',
-              border: '1px solid rgba(255,255,255,0.12)',
-              color: '#9898b8',
-              fontFamily: 'Syne,sans-serif',
-              fontWeight: 700,
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#f0f0f8'; el.style.borderColor = 'rgba(255,255,255,0.25)'; el.style.background = 'rgba(255,255,255,0.1)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.color = '#9898b8'; el.style.borderColor = 'rgba(255,255,255,0.12)'; el.style.background = 'rgba(255,255,255,0.06)'; }}
-          >
-            🎲 Putar Ulang
-          </button>
+          <p style={{ color:'#9898b8', fontSize:'0.8rem', fontFamily:'Nunito,sans-serif', opacity:0.7 }}>
+            Klik tombol putar di roda untuk spin ulang
+          </p>
         </div>
-      ) : (
-        /* ── Initial spin button ── */
-        <button
-          onClick={spin}
-          disabled={isSpinning}
-          style={{
-            background: isSpinning ? 'rgba(255,255,255,0.08)' : 'linear-gradient(135deg,#4d96ff,#c77dff)',
-            border: 'none',
-            cursor: isSpinning ? 'not-allowed' : 'pointer',
-            fontFamily: 'Syne,sans-serif',
-            fontWeight: 800,
-            fontSize: '1.125rem',
-            color: 'white',
-            padding: '16px 48px',
-            borderRadius: '100px',
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-            transition: 'all 0.3s',
-            opacity: isSpinning ? 0.7 : 1,
-            boxShadow: isSpinning ? 'none' : '0 8px 32px rgba(77,150,255,0.4)',
-          }}
-          onMouseEnter={e => { if (!isSpinning) (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px) scale(1.03)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0) scale(1)'; }}
-        >
-          {isSpinning
-            ? <span className="flex items-center gap-2"><span style={{ display:'inline-block', animation:'spinIcon 1s linear infinite' }}>⚙️</span>Memutar...</span>
-            : '🎲 PUTAR RODA!'}
-        </button>
       )}
 
       <style jsx>{`
-        @keyframes resultReveal {
-          from { opacity: 0; transform: translateY(16px) scale(0.97); }
-          to   { opacity: 1; transform: translateY(0)    scale(1);    }
-        }
-        @keyframes spinIcon {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
+        @keyframes resultReveal { from{opacity:0;transform:translateY(18px) scale(0.97)} to{opacity:1;transform:none} }
+        @keyframes fadeInUp     { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+        @keyframes spinIcon     { from{transform:rotate(0)} to{transform:rotate(360deg)} }
       `}</style>
     </div>
   );

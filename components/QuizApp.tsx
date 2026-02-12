@@ -17,7 +17,7 @@ export const CATEGORY_COLORS = {
 export default function QuizApp() {
   const {
     appState, selectedCategory, selectedDifficulty,
-    currentQuestion, allDifficultyTimes,
+    currentQuestion, allDifficultyTimes, poolSizes,
     recoveredTimeLeft, hydrating,
     usedQuestions, remaining, totalInPool,
     selectQuestion, recordTimerStart, finish, fullReset,
@@ -110,6 +110,7 @@ export default function QuizApp() {
             onDifficultySelected={selectQuestion}
             usedQuestions={usedQuestions}
             difficultyTimes={allDifficultyTimes}
+            poolSizes={poolSizes}
           />
         )}
       </main>
