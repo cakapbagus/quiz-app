@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useCallback } from 'react';
-import { Difficulty } from '@/hooks/useQuizSession';
+import { Difficulty } from './QuizApp';
 
 // Extend Window to include Safari's prefixed AudioContext
 declare global {
@@ -187,6 +187,8 @@ export default function SpinWheel({
       {/* ── Title ── */}
       <div className="text-center mb-8">
         <h1 style={{ fontFamily: 'Poppins,sans-serif', fontWeight: 800, fontSize: 'clamp(1.8rem,5vw,2.8rem)', lineHeight: 1.15, color: '#f0f0f8' }}>
+          <span>Olimpiade KODEIN</span>
+          <br />
           <span style={{ background: 'linear-gradient(90deg,#4d96ff,#c77dff,#ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Putar Roda!</span>
         </h1>
         <p style={{ color: '#9898b8', marginTop: 8, fontFamily: 'Nunito,sans-serif', fontSize: '0.95rem' }}>
@@ -255,13 +257,13 @@ export default function SpinWheel({
                 <g key={i} transform={`rotate(${p.rot},${p.x},${p.y})`} filter="url(#textShadow)">
                   {words.length === 1 ? (
                     <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
-                      fill="white" fontSize="12" fontFamily="Poppins,sans-serif" fontWeight="700">{cat}</text>
+                      fill="white" fontSize="16" fontFamily="Poppins,sans-serif" fontWeight="600">{cat}</text>
                   ) : (
                     <>
                       <text x={p.x} y={p.y - 7} textAnchor="middle" dominantBaseline="middle"
-                        fill="white" fontSize="11" fontFamily="Poppins,sans-serif" fontWeight="700">{words[0]}</text>
+                        fill="white" fontSize="14" fontFamily="Poppins,sans-serif" fontWeight="600">{words[0]}</text>
                       <text x={p.x} y={p.y + 8} textAnchor="middle" dominantBaseline="middle"
-                        fill="white" fontSize="11" fontFamily="Poppins,sans-serif" fontWeight="700">{words.slice(1).join(' ')}</text>
+                        fill="white" fontSize="14" fontFamily="Poppins,sans-serif" fontWeight="600">{words.slice(1).join(' ')}</text>
                     </>
                   )}
                 </g>
@@ -298,7 +300,7 @@ export default function SpinWheel({
         >
           <span style={{ fontSize: 30, display:'inline-block', animation: isSpinning ? 'spinIcon 0.6s linear infinite' : 'none' }}>⚙️</span>
           <span style={{ color: isSpinning ? '#9898b8' : 'white', fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:'0.6rem', marginTop:2, letterSpacing:'0.08em', textTransform:'uppercase' }}>
-            {isSpinning ? '...' : 'PUTAR!'}
+            {isSpinning ? '' : 'PUTAR!'}
           </span>
         </button>
       </div>

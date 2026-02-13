@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Difficulty } from '@/hooks/useQuizSession';
+import { Difficulty } from './QuizApp';
 
 interface ResumeToastProps {
   category: string;

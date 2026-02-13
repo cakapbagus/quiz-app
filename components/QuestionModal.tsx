@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Question, Difficulty } from '@/hooks/useQuizSession';
+import { Question, Difficulty } from './QuizApp';
 
 interface CategoryColor { bg: string; light: string; text: string; icon: string; }
 interface Props {
@@ -24,6 +24,12 @@ const DIFF_STYLE = {
   Sulit:  { color: '#ff6b6b', label: '🔥 Sulit'  },
 };
 const LABELS = ['A','B','C','D'];
+const ANSWER_COLORS = [
+  { bg: 'rgba(77,150,255,0.12)', border: 'rgba(77,150,255,0.4)', text: '#4d96ff', hover: 'rgba(77,150,255,0.2)' },
+  { bg: 'rgba(199,125,255,0.12)', border: 'rgba(199,125,255,0.4)', text: '#c77dff', hover: 'rgba(199,125,255,0.2)' },
+  { bg: 'rgba(255,154,60,0.12)', border: 'rgba(255,154,60,0.4)', text: '#ff9a3c', hover: 'rgba(255,154,60,0.2)' },
+  { bg: 'rgba(107,203,119,0.12)', border: 'rgba(107,203,119,0.4)', text: '#6bcb77', hover: 'rgba(107,203,119,0.2)' },
+];
 
 export default function QuestionModal({
   question, category, difficulty, categoryColor,
@@ -118,9 +124,11 @@ export default function QuestionModal({
             <QuestionBlock question={question} />
             <div style={{ height: 20 }} />
 
+            {/* jika isi, jangan tampilkan. pilihan ganda barulah ditampilkan. */}
             {isIsi ? (
               /* Isian: show text input placeholder (disabled until started) */
-              <IsiBlock value={isiAnswer} onChange={setIsiAnswer} disabled />
+              // <IsiBlock value={isiAnswer} onChange={setIsiAnswer} disabled />
+              null
             ) : (
               /* Pilihan Ganda: show choices (disabled until started) */
               <ChoicesBlock answers={answers} selected={null} correctIdx={-1} disabled />
@@ -149,10 +157,11 @@ export default function QuestionModal({
             <div style={{ height: 18 }} />
 
             {isIsi ? (
-              <IsiBlock value={isiAnswer} onChange={setIsiAnswer} />
+              // <IsiBlock value={isiAnswer} onChange={setIsiAnswer} />
+              null
             ) : (
               <ChoicesBlock answers={answers} selected={selectedMC} correctIdx={-1}
-                onSelect={i => setSelectedMC(i)} />
+                onSelect={i => setSelectedMC(i)} disabled/>
             )}
             <div style={{ height: 20 }} />
 
@@ -225,11 +234,11 @@ export default function QuestionModal({
               </p>
             </div>
 
-            {remaining === 0 && (
+            {/* {remaining === 0 && (
               <p style={{ color:'#ffd93d', fontSize:'0.8rem', fontFamily:'Space Mono,monospace', textAlign:'center' }}>
                 🎉 Semua soal pada kategori ini sudah dipakai — akan di-reset otomatis.
               </p>
-            )}
+            )} */}
 
             <div className="flex justify-center" style={{ paddingTop:4 }}>
               <ActionBtn onClick={onFinished} gradient="linear-gradient(135deg,#4d96ff,#c77dff)" shadow="rgba(77,150,255,0.4)">
@@ -264,20 +273,21 @@ function ChoicesBlock({ answers, selected, correctIdx, onSelect, disabled = fals
   return (
     <div className="flex flex-col" style={{ gap:10 }}>
       {answers.map((ans, i) => {
+        const col = ANSWER_COLORS[i];
         const isSel = selected === i;
         const isOk  = correctIdx === i;
         return (
           <button key={i} disabled={disabled} onClick={() => onSelect?.(i)}
             className="answer-choice"
             style={{
-              background: isOk ? 'rgba(107,203,119,0.15)' : isSel ? 'rgba(77,150,255,0.12)' : 'rgba(255,255,255,0.03)',
-              border:`2px solid ${isOk ? '#6bcb77' : isSel ? '#4d96ff' : 'rgba(255,255,255,0.07)'}`,
+              background: isOk ? 'rgba(107,203,119,0.15)' : isSel ? col.hover : col.bg,
+              border:`2px solid ${isOk ? '#6bcb77' : isSel ? col.border : 'rgba(255,255,255,0.07)'}`,
               cursor: disabled ? 'default' : 'pointer',
             }}>
-            <span className="answer-letter" style={{ color: isOk ? '#6bcb77' : isSel ? '#4d96ff' : 'rgba(255,255,255,0.3)' }}>
+            <span className="answer-letter" style={{ color: isOk ? '#6bcb77' : isSel ? col.text : 'rgb(255, 255, 255, 0.8)' }}>
               {LABELS[i]}
             </span>
-            <span style={{ color: isOk ? '#6bcb77' : isSel ? '#f0f0f8' : '#c8c8d8',
+            <span style={{ color: isOk ? '#6bcb77' : isSel ? '#ffffff' : '#ececec',
               fontFamily:'Nunito,sans-serif', fontWeight: isSel || isOk ? 700 : 500, fontSize:'0.97rem', lineHeight:1.5 }}>
               {ans}{isOk && ' ✓'}
             </span>
