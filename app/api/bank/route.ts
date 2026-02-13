@@ -1,30 +1,93 @@
 import { NextResponse } from 'next/server';
+import { createHash } from 'crypto';
+import { readFile, writeFile } from 'fs/promises';
+import { join } from 'path';
 
 const GAS_URL =
   'https://script.google.com/macros/s/AKfycbwkqpS3OHhigQf95hl3GBQv-NbIUnyt9LD7n6D0gFFVyK-54WNDTp7bbXGEBGykZyIg/exec';
 
-export const dynamic = 'force-dynamic';
+const PUBLIC_DIR   = join(process.cwd(), 'public');
+const BANK_PATH    = join(PUBLIC_DIR, 'bank_soal.json');
+const CHKSUM_PATH  = join(PUBLIC_DIR, 'bank_soal.sha256');
+
+export const dynamic   = 'force-dynamic';
 export const revalidate = 0;
+
+// ─── Main handler ─────────────────────────────────────────────────────────────
 
 export async function GET() {
   try {
-    const res = await fetch(GAS_URL, {
-      headers: { 'User-Agent': 'QuizSpin/1.0' },
-      next: { revalidate: 300 },
-    });
-    if (!res.ok) throw new Error(`GAS responded ${res.status}`);
-    const raw = await res.json();
+    // 1. Try to fetch fresh data from GAS
+    let gasRaw: string | null = null;
+    try {
+      const res = await fetch(GAS_URL, {
+        headers: { 'User-Agent': 'QuizSpin/1.0' },
+        // Don't use Next cache here — we do our own checksum cache
+        cache: 'no-store',
+      });
+      if (res.ok) {
+        gasRaw = await res.text();
+      }
+    } catch (fetchErr) {
+      console.warn('[bank] GAS fetch failed, will use local copy:', fetchErr);
+    }
+
+    // 2. Decide whether to update local file
+    let bankJson: string;
+
+    if (gasRaw) {
+      const gasChecksum = sha256(gasRaw);
+
+      // Read stored checksum (if any)
+      let storedChecksum = '';
+      try {
+        storedChecksum = (await readFile(CHKSUM_PATH, 'utf-8')).trim();
+      } catch { /* no file yet */ }
+
+      if (gasChecksum !== storedChecksum) {
+        // Data changed — validate it's parseable JSON before writing
+        try {
+          JSON.parse(gasRaw); // throws if invalid
+          await writeFile(BANK_PATH,   gasRaw,        'utf-8');
+          await writeFile(CHKSUM_PATH, gasChecksum,   'utf-8');
+          console.log('[bank] Local cache updated (checksum changed)');
+        } catch (parseErr) {
+          console.error('[bank] GAS returned invalid JSON, keeping local copy:', parseErr);
+          bankJson = await readFile(BANK_PATH, 'utf-8');
+        }
+        bankJson ??= gasRaw;
+      } else {
+        // Checksums match — use local copy (skip GAS write)
+        console.log('[bank] Checksum match — serving from local cache');
+        bankJson = await readFile(BANK_PATH, 'utf-8');
+      }
+    } else {
+      // GAS unavailable — fall back to local file
+      bankJson = await readFile(BANK_PATH, 'utf-8');
+    }
+
+    const raw        = JSON.parse(bankJson!);
     const normalised = normalise(raw);
+
     return NextResponse.json(normalised, {
-      headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60' },
+      headers: {
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=60',
+        'X-Bank-Source': gasRaw ? 'gas' : 'local',
+      },
     });
   } catch (err) {
-    console.error('Failed to fetch bank soal from GAS:', err);
-    return NextResponse.json({ error: 'Failed to fetch bank soal' }, { status: 502 });
+    console.error('[bank] Fatal error:', err);
+    return NextResponse.json({ error: 'Failed to load bank soal' }, { status: 502 });
   }
 }
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// ─── SHA-256 helper ───────────────────────────────────────────────────────────
+
+function sha256(text: string): string {
+  return createHash('sha256').update(text, 'utf-8').digest('hex');
+}
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface RawQuestion {
   tipe?: string | null;
@@ -39,24 +102,22 @@ interface RawQuestion {
   tingkat?: string | null;
 }
 
-export interface NormQuestion {
-  tipe: string;             // "Pilihan Ganda" | "Isian"
+interface NormQuestion {
+  tipe: string;
   soal: string;
   pg_a: string; pg_b: string; pg_c: string; pg_d: string;
-  jawaban: string | number; // number preserved for Isian (e.g. 50, -80)
+  jawaban: string | number;
   waktu: number;
 }
 
 type NormalisedBank = Record<string, [Record<string, NormQuestion[]>]>;
 
-// ─── Normalise a single row ───────────────────────────────────────────────────
+// ─── Normalise a single question row ─────────────────────────────────────────
 
 function normaliseRow(row: RawQuestion): NormQuestion | null {
-  // Must have non-empty question text
   const soal = (row.soal ?? '').toString().trim();
   if (!soal) return null;
 
-  // Must have a valid positive waktu
   const waktu = Number(row.waktu);
   if (!waktu || isNaN(waktu) || waktu <= 0) return null;
 
@@ -65,12 +126,10 @@ function normaliseRow(row: RawQuestion): NormQuestion | null {
   const tipe    = isIsi ? 'Isian' : 'Pilihan Ganda';
 
   if (isIsi) {
-    // jawaban must be non-empty (can be 0 which is a valid numeric answer)
     const jaw    = row.jawaban;
     const jawStr = jaw == null ? '' : jaw.toString().trim();
     if (jawStr === '') return null;
 
-    // Preserve numeric type (50, -80, 0) so it renders without trailing ".0"
     const jawaban: string | number =
       typeof jaw === 'number'
         ? jaw
@@ -80,7 +139,6 @@ function normaliseRow(row: RawQuestion): NormQuestion | null {
 
     return { tipe, soal, pg_a: '', pg_b: '', pg_c: '', pg_d: '', jawaban, waktu };
   } else {
-    // Pilihan Ganda: all four options must be non-empty
     const pg_a = (row.pg_a ?? '').toString().trim();
     const pg_b = (row.pg_b ?? '').toString().trim();
     const pg_c = (row.pg_c ?? '').toString().trim();
@@ -94,16 +152,10 @@ function normaliseRow(row: RawQuestion): NormQuestion | null {
   }
 }
 
-// ─── Main normaliser ─────────────────────────────────────────────────────────
-//
-// Shape A (real GAS format):
-//   { "English": [{ "Receh": [{...}], ... }], "Matematika": [{ "Receh": [{...}] }] }
-//
-// Shape B (flat rows):
-//   [{ kategori, tingkat, soal, pg_a, ... }, ...]
+// ─── Normalise the full bank structure ───────────────────────────────────────
 
 function normalise(raw: unknown): NormalisedBank {
-  // Shape A: object whose values are 1-element arrays containing a diff-map
+  // Shape A: { "English": [{ "Receh": [...] }], ... }
   if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
     const obj      = raw as Record<string, unknown>;
     const firstVal = Object.values(obj)[0];
@@ -120,27 +172,20 @@ function normalise(raw: unknown): NormalisedBank {
 
         for (const [diff, questions] of Object.entries(diffMap)) {
           if (!Array.isArray(questions)) continue;
-
           const cleaned: NormQuestion[] = questions
             .map(q => normaliseRow(q as RawQuestion))
             .filter((q): q is NormQuestion => q !== null);
-
-          if (cleaned.length > 0) {
-            result[cat][0][diff] = cleaned;
-          }
+          if (cleaned.length > 0) result[cat][0][diff] = cleaned;
         }
 
-        // Drop category if nothing valid survived
-        if (Object.keys(result[cat][0]).length === 0) {
-          delete result[cat];
-        }
+        if (Object.keys(result[cat][0]).length === 0) delete result[cat];
       }
 
       return result;
     }
   }
 
-  // Shape B: flat array of row objects
+  // Shape B: flat array
   if (Array.isArray(raw)) {
     const result: NormalisedBank = {};
 
@@ -152,9 +197,9 @@ function normalise(raw: unknown): NormalisedBank {
       const norm = normaliseRow(row);
       if (!norm) continue;
 
-      if (!result[cat])        result[cat] = [{}];
-      if (!result[cat][0])     result[cat][0] = {};
-      if (!result[cat][0][diff]) result[cat][0][diff] = [];
+      if (!result[cat])            result[cat] = [{}];
+      if (!result[cat][0])         result[cat][0] = {};
+      if (!result[cat][0][diff])   result[cat][0][diff] = [];
       result[cat][0][diff].push(norm);
     }
 

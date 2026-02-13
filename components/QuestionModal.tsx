@@ -13,6 +13,7 @@ interface Props {
   totalInPool: number | null;
   onTimerStart: (d: number) => void;
   onFinished: () => void;
+  onBack: () => void;  // return to wheel without consuming a question
 }
 
 type Phase = 'ready' | 'running' | 'timeout' | 'answer';
@@ -23,17 +24,11 @@ const DIFF_STYLE = {
   Sulit:  { color: '#ff6b6b', label: '🔥 Sulit'  },
 };
 const LABELS = ['A','B','C','D'];
-const ANS_COLORS = [
-  { base:'rgba(77,150,255,0.1)',  active:'rgba(77,150,255,0.22)',  border:'#4d96ff' },
-  { base:'rgba(199,125,255,0.1)', active:'rgba(199,125,255,0.22)', border:'#c77dff' },
-  { base:'rgba(255,154,60,0.1)',  active:'rgba(255,154,60,0.22)',  border:'#ff9a3c' },
-  { base:'rgba(107,203,119,0.1)', active:'rgba(107,203,119,0.22)', border:'#6bcb77' },
-];
 
 export default function QuestionModal({
   question, category, difficulty, categoryColor,
   recoveredTimeLeft, remaining,
-  onTimerStart, onFinished,
+  onTimerStart, onFinished, onBack,
 }: Props) {
   const isRecovery = recoveredTimeLeft !== null;
   const isIsi      = question.tipe?.toLowerCase().includes('isian') ?? false;
@@ -136,7 +131,10 @@ export default function QuestionModal({
             <TimePill seconds={question.waktu} />
             <div style={{ height: 24 }} />
 
-            <div className="flex justify-center">
+            <div className="flex justify-center items-center gap-3">
+              <ActionBtn onClick={onBack} gradient="linear-gradient(135deg,#555,#333)" shadow="rgba(0,0,0,0.3)">
+                ← Kembali
+              </ActionBtn>
               <ActionBtn onClick={handleStart} gradient="linear-gradient(135deg,#4d96ff,#c77dff)" shadow="rgba(77,150,255,0.4)">
                 ▶&nbsp; Mulai!
               </ActionBtn>
@@ -227,11 +225,11 @@ export default function QuestionModal({
               </p>
             </div>
 
-            {/* {remaining === 0 && (
+            {remaining === 0 && (
               <p style={{ color:'#ffd93d', fontSize:'0.8rem', fontFamily:'Space Mono,monospace', textAlign:'center' }}>
                 🎉 Semua soal pada kategori ini sudah dipakai — akan di-reset otomatis.
               </p>
-            )} */}
+            )}
 
             <div className="flex justify-center" style={{ paddingTop:4 }}>
               <ActionBtn onClick={onFinished} gradient="linear-gradient(135deg,#4d96ff,#c77dff)" shadow="rgba(77,150,255,0.4)">
@@ -266,21 +264,20 @@ function ChoicesBlock({ answers, selected, correctIdx, onSelect, disabled = fals
   return (
     <div className="flex flex-col" style={{ gap:10 }}>
       {answers.map((ans, i) => {
-        const col = ANS_COLORS[i];
         const isSel = selected === i;
         const isOk  = correctIdx === i;
         return (
           <button key={i} disabled={disabled} onClick={() => onSelect?.(i)}
             className="answer-choice"
             style={{
-              background: isOk ? 'rgba(107,203,119,0.15)' : isSel ? col.active : col.base,
-              border:`2px solid ${isOk ? '#6bcb77' : isSel ? col.border : 'rgba(255,255,255,0.07)'}`,
+              background: isOk ? 'rgba(107,203,119,0.15)' : isSel ? 'rgba(77,150,255,0.12)' : 'rgba(255,255,255,0.03)',
+              border:`2px solid ${isOk ? '#6bcb77' : isSel ? '#4d96ff' : 'rgba(255,255,255,0.07)'}`,
               cursor: disabled ? 'default' : 'pointer',
             }}>
-            <span className="answer-letter" style={{ color: isOk ? '#6bcb77' : isSel ? '#4d96ff' : 'rgba(255,255,255,0.8)' }}>
+            <span className="answer-letter" style={{ color: isOk ? '#6bcb77' : isSel ? '#4d96ff' : 'rgba(255,255,255,0.3)' }}>
               {LABELS[i]}
             </span>
-            <span style={{ color: isOk ? '#6bcb77' : isSel ? '#ffffff' : '#f0f0f8',
+            <span style={{ color: isOk ? '#6bcb77' : isSel ? '#f0f0f8' : '#c8c8d8',
               fontFamily:'Nunito,sans-serif', fontWeight: isSel || isOk ? 700 : 500, fontSize:'0.97rem', lineHeight:1.5 }}>
               {ans}{isOk && ' ✓'}
             </span>

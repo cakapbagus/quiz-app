@@ -67,10 +67,22 @@ export async function POST(req: NextRequest) {
 }
 
 // ── DELETE /api/session ───────────────────────────────────────────────────────
-// Clears the session cookie (full reset)
+// Clears the session cookie (full reset) — uses both delete() and explicit
+// maxAge=0 for maximum browser compatibility
 export async function DELETE() {
   const res = NextResponse.json({ ok: true });
+  // Method 1: Next.js cookie helper
   res.cookies.delete(COOKIE_NAME);
+  // Method 2: Explicitly expire via Set-Cookie header (belt-and-suspenders)
+  res.cookies.set({
+    name: COOKIE_NAME,
+    value: '',
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+    expires: new Date(0),
+  });
   return res;
 }
 

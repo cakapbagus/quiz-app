@@ -16,7 +16,7 @@ const QuizApp = dynamic(() => import('./QuizApp'), {
         background: 'linear-gradient(135deg,#4d96ff,#c77dff)',
         display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28,
         animation: 'qs-pulse 1s ease-in-out infinite',
-      }}>⚙️</div>
+      }}>🎡</div>
       <p style={{ color: '#9898b8', fontFamily: 'sans-serif', fontSize: 14 }}>
         Memuat QuizSpin...
       </p>

@@ -1,6 +1,13 @@
 'use client';
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { Difficulty } from '@/hooks/useQuizSession';
+
+// Extend Window to include Safari's prefixed AudioContext
+declare global {
+  interface Window {
+    webkitAudioContext?: typeof AudioContext;
+  }
+}
 
 const CATEGORIES   = ['Bahasa Indonesia', 'English', 'Matematika', 'PAI', 'IT', 'IPA'];
 const CAT_ICONS    = ['📝', '🌍', '🔢', '🕌', '💻', '🔬'];
@@ -33,7 +40,7 @@ function useSpinSound() {
 
   const getCtx = useCallback(() => {
     if (!ctxRef.current) {
-      ctxRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      ctxRef.current = new (window.AudioContext || window.webkitAudioContext!)();
     }
     return ctxRef.current;
   }, []);
@@ -180,8 +187,6 @@ export default function SpinWheel({
       {/* ── Title ── */}
       <div className="text-center mb-8">
         <h1 style={{ fontFamily: 'Poppins,sans-serif', fontWeight: 800, fontSize: 'clamp(1.8rem,5vw,2.8rem)', lineHeight: 1.15, color: '#f0f0f8' }}>
-          <span>Olimpiade KODEIN</span>
-          <br></br>
           <span style={{ background: 'linear-gradient(90deg,#4d96ff,#c77dff,#ff6b6b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Putar Roda!</span>
         </h1>
         <p style={{ color: '#9898b8', marginTop: 8, fontFamily: 'Nunito,sans-serif', fontSize: '0.95rem' }}>

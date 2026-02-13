@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "QuizSpin - Roda Kuis Interaktif",
-  description: "Roda undian kuis interaktif untuk olimpiade KODEIN",
+  description: "Roda undian kuis interaktif untuk berbagai mata pelajaran",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

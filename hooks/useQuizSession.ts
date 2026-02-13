@@ -27,6 +27,8 @@ export interface QuizSessionState {
   selectedCategory: string | null;
   selectedDifficulty: Difficulty | null;
   currentQuestion: Question | null;
+  /** The index of the currently displayed question in the pool */
+  currentQuestionIndex: number | null;
   /** difficultyTimes[category][difficulty] = seconds */
   allDifficultyTimes: Record<string, Record<string, number>>;
   /** poolSizes[category][difficulty] = total question count in that pool */
@@ -109,6 +111,7 @@ export function useQuizSession() {
     selectedCategory: null,
     selectedDifficulty: null,
     currentQuestion: null,
+    currentQuestionIndex: null,
     allDifficultyTimes: {},
     poolSizes: {},
     recoveredTimeLeft: null,
@@ -146,6 +149,7 @@ export function useQuizSession() {
             selectedCategory: session.category,
             selectedDifficulty: session.difficulty,
             currentQuestion: question,
+            currentQuestionIndex: session.questionIndex,
             allDifficultyTimes: allTimes,
             poolSizes,
             recoveredTimeLeft,
@@ -178,7 +182,7 @@ export function useQuizSession() {
         `/api/questions?category=${encodeURIComponent(category)}&difficulty=${encodeURIComponent(difficulty)}`
       );
       if (!res.ok) throw new Error('API error');
-      const { question, remaining, totalInPool }: { question: Question; remaining: number; totalInPool: number } = await res.json();
+      const { question, questionIndex, remaining, totalInPool }: { question: Question; questionIndex: number; remaining: number; totalInPool: number } = await res.json();
       saveLocalCache({ remaining, totalInPool });
       setState(prev => ({
         ...prev,
@@ -186,6 +190,7 @@ export function useQuizSession() {
         selectedCategory: category,
         selectedDifficulty: difficulty,
         currentQuestion: question,
+        currentQuestionIndex: questionIndex,
         recoveredTimeLeft: null,
         remaining,
         totalInPool,
@@ -219,6 +224,7 @@ export function useQuizSession() {
       selectedCategory: null,
       selectedDifficulty: null,
       currentQuestion: null,
+      currentQuestionIndex: null,
       recoveredTimeLeft: null,
       remaining: null,
       totalInPool: null,
@@ -226,21 +232,73 @@ export function useQuizSession() {
     }));
   }, []);
 
+  // ── GO BACK – return to wheel, un-consume the question that was fetched ──────
+  const goBack = useCallback(async () => {
+    // We need the questionIndex and category/difficulty from current React state
+    // (not from a fresh GET, to avoid race conditions)
+    setState(prev => {
+      const cat  = prev.selectedCategory;
+      const diff = prev.selectedDifficulty;
+
+      // Build corrected usedQuestions: remove the last-consumed index
+      let newUsed = prev.usedQuestions;
+      if (cat && diff && prev.currentQuestionIndex !== null) {
+        const qIdx    = prev.currentQuestionIndex;
+        const existing = prev.usedQuestions[cat]?.[diff] ?? [];
+        // Remove the exact index that was consumed
+        const trimmed  = existing.filter(i => i !== qIdx);
+        newUsed = {
+          ...prev.usedQuestions,
+          [cat]: {
+            ...prev.usedQuestions[cat],
+            [diff]: trimmed,
+          },
+        };
+      }
+
+      // Fire the server update asynchronously — we pass the already-corrected
+      // usedQuestions so the JWT is fully in sync with our new React state.
+      // Use a dedicated PATCH-style payload that REPLACES (not merges) usedQuestions.
+      fetch('/api/session/replace', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          state: 'wheel',
+          category: null,
+          difficulty: null,
+          questionIndex: null,
+          timerStartedAt: null,
+          timerDuration: null,
+          usedQuestions: newUsed,
+        }),
+      }).catch(err => console.error('goBack session update failed', err));
+
+      saveLocalCache({ remaining: null, totalInPool: null });
+
+      return {
+        ...prev,
+        appState: 'wheel',
+        selectedCategory: null,
+        selectedDifficulty: null,
+        currentQuestion: null,
+        currentQuestionIndex: null,
+        recoveredTimeLeft: null,
+        remaining: null,
+        totalInPool: null,
+        usedQuestions: newUsed,
+      };
+    });
+  }, []);
+
   // ── FULL RESET – clear everything including usedQuestions ─────────────────
   const fullReset = useCallback(async () => {
+    // 1. DELETE session cookie — await so browser receives Set-Cookie before reload
     await fetch('/api/session', { method: 'DELETE' });
-    try { sessionStorage.removeItem('quizspin_ui'); } catch { /* ignore */ }
-    setState(prev => ({
-      ...prev,
-      appState: 'wheel',
-      selectedCategory: null,
-      selectedDifficulty: null,
-      currentQuestion: null,
-      recoveredTimeLeft: null,
-      remaining: null,
-      totalInPool: null,
-      usedQuestions: {},
-    }));
+    // 2. Clear ALL sessionStorage (bank cache, UI cache, everything)
+    try { sessionStorage.clear(); } catch { /* ignore */ }
+    // 3. Hard reload — creates a completely fresh React tree from empty session.
+    //    No setState() needed: reload is the state reset.
+    window.location.reload();
   }, []);
 
   return {
@@ -248,6 +306,7 @@ export function useQuizSession() {
     selectQuestion,
     recordTimerStart,
     finish,
+    goBack,
     fullReset,
   };
 }

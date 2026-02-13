@@ -20,7 +20,7 @@ export default function QuizApp() {
     currentQuestion, allDifficultyTimes, poolSizes,
     recoveredTimeLeft, hydrating,
     usedQuestions, remaining, totalInPool,
-    selectQuestion, recordTimerStart, finish, fullReset,
+    selectQuestion, recordTimerStart, finish, goBack, fullReset,
   } = useQuizSession();
 
   const [showResetConfirm, setShowResetConfirm] = useState(false);
@@ -33,7 +33,7 @@ export default function QuizApp() {
     .flatMap(d => Object.values(d)).flat().length;
 
   const handleResetClick = () => setShowResetConfirm(true);
-  const handleResetConfirm = async () => { setShowResetConfirm(false); await fullReset(); window.location.reload(); };
+  const handleResetConfirm = async () => { setShowResetConfirm(false); await fullReset(); };
   const handleResetCancel  = () => setShowResetConfirm(false);
 
   return (
@@ -105,15 +105,17 @@ export default function QuizApp() {
           totalInPool={totalInPool}
           onTimerStart={recordTimerStart}
           onFinished={finish}
+          onBack={goBack}
         />
       )}
 
       {/* ── Reset confirmation modal ── */}
       {showResetConfirm && (
-        <div className="modal-overlay">
-          <div className="modal-box" style={{ maxWidth: 600, maxHeight: '92vh', overflowY: 'auto' }}>
+        <div className="modal-overlay" style={{ zIndex: 60 }}>
+          <div className="modal-box flex flex-col items-center gap-5 text-center"
+            style={{ maxWidth: 440, border:'1px solid rgba(255,107,107,0.3)', animation:'popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)' }}>
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-                style={{ background:'rgba(255,107,107,0.15)', border:'2px solid rgba(255,107,107,0.4)' }}>
+              style={{ background:'rgba(255,107,107,0.15)', border:'2px solid rgba(255,107,107,0.4)' }}>
               ⚠️
             </div>
             <div>
@@ -123,7 +125,7 @@ export default function QuizApp() {
               <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif', fontSize:'0.9rem', lineHeight:1.6 }}>
                 Semua progres dan riwayat soal yang sudah dipakai akan dihapus. Quiz akan mulai dari awal.
               </p>
-              {totalUsed > 0 && (
+              {!hydrating && totalUsed > 0 && (
                 <p style={{ color:'#ff6b6b', fontFamily:'Space Mono,monospace', fontSize:'0.8rem', marginTop:8 }}>
                   {totalUsed} soal akan direset
                 </p>
@@ -151,7 +153,7 @@ export default function QuizApp() {
 
       {/* ── Fixed bottom-right reset FAB ── */}
       <div className="fixed z-40" style={{ bottom:28, right:28, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:8 }}>
-        {totalUsed > 0 && (
+        {!hydrating && totalUsed > 0 && (
           <div style={{ background:'rgba(10,10,20,0.85)', backdropFilter:'blur(8px)', border:'1px solid rgba(77,150,255,0.25)', color:'#4d96ff', fontFamily:'Space Mono,monospace', fontSize:'0.7rem', padding:'4px 10px', borderRadius:99 }}>
             ✓ {totalUsed} soal terpakai
           </div>
@@ -179,6 +181,7 @@ export default function QuizApp() {
 // Stars: generated only on client to avoid SSR/hydration mismatch
 function Stars() {
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-compiler/react-compiler
   useEffect(() => { setMounted(true); }, []);
 
   // Deterministic pseudo-random values seeded by index — same on every render
