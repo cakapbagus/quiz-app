@@ -43,4 +43,3 @@ next-env.d.ts
 # markdown
 *.md
 !README.md
-.vercel

@@ -5,9 +5,11 @@ export type AppState = 'wheel' | 'question';
 export type Difficulty = 'Receh' | 'Sedang' | 'Sulit';
 
 export interface Question {
-  tipe: string; soal: string;
+  tipe: string;                      // "Pilihan Ganda" | "Isian"
+  soal: string;
   pg_a: string; pg_b: string; pg_c: string; pg_d: string;
-  jawaban: string; waktu: number;
+  jawaban: string | number;          // Isian can have a numeric/string answer
+  waktu: number;
 }
 
 export interface SessionPayload {

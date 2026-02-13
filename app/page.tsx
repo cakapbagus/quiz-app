@@ -1,5 +1,5 @@
-import QuizApp from '@/components/QuizApp';
+import ClientRoot from '@/components/ClientRoot';
 
 export default function Home() {
-  return <QuizApp />;
+  return <ClientRoot />;
 }

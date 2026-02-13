@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useQuizSession } from '@/hooks/useQuizSession';
 import SpinWheel from './SpinWheel';
 import QuestionModal from './QuestionModal';
@@ -33,7 +33,7 @@ export default function QuizApp() {
     .flatMap(d => Object.values(d)).flat().length;
 
   const handleResetClick = () => setShowResetConfirm(true);
-  const handleResetConfirm = async () => { setShowResetConfirm(false); await fullReset(); };
+  const handleResetConfirm = async () => { setShowResetConfirm(false); await fullReset(); window.location.reload(); };
   const handleResetCancel  = () => setShowResetConfirm(false);
 
   return (
@@ -49,38 +49,16 @@ export default function QuizApp() {
     >
       <Stars />
 
-      {/* ── Header ── */}
-      <header className="relative z-10 flex items-center justify-between px-6 py-5">
+      {/* ── Header — logo only ── */}
+      <header className="relative z-10 flex items-center px-6 py-5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl"
             style={{ background: 'linear-gradient(135deg,#4d96ff,#c77dff)' }}>
-            🎡
+            ⚙️
           </div>
-          <span style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'1.25rem', background:'linear-gradient(90deg,#4d96ff,#c77dff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
+          <span style={{ fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:'1.25rem', background:'linear-gradient(90deg,#4d96ff,#c77dff)', WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent' }}>
             QuizSpin
           </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Used counter */}
-          {totalUsed > 0 && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs"
-              style={{ background:'rgba(77,150,255,0.1)', border:'1px solid rgba(77,150,255,0.25)', color:'#4d96ff', fontFamily:'Space Mono,monospace' }}>
-              ✓ {totalUsed} soal terpakai
-            </div>
-          )}
-
-          {/* Reset button */}
-          <button
-            onClick={handleResetClick}
-            title="Reset seluruh quiz dari awal"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs"
-            style={{ background:'rgba(255,107,107,0.1)', border:'1px solid rgba(255,107,107,0.3)', color:'#ff6b6b', cursor:'pointer', fontFamily:'Syne,sans-serif', fontWeight:700, transition:'all 0.2s' }}
-            onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background='rgba(255,107,107,0.2)'; el.style.boxShadow='0 4px 16px rgba(255,107,107,0.25)'; }}
-            onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background='rgba(255,107,107,0.1)'; el.style.boxShadow=''; }}
-          >
-            🔄 Reset Quiz
-          </button>
         </div>
       </header>
 
@@ -90,7 +68,7 @@ export default function QuizApp() {
           <div className="flex flex-col items-center gap-4">
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
               style={{ background:'linear-gradient(135deg,#4d96ff,#c77dff)', animation:'pulse 1s ease-in-out infinite' }}>
-              🎡
+              ⚙️
             </div>
             <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif' }}>Memulihkan sesi...</p>
           </div>
@@ -141,7 +119,7 @@ export default function QuizApp() {
               ⚠️
             </div>
             <div>
-              <h3 style={{ fontFamily:'Syne,sans-serif', fontWeight:800, fontSize:'1.35rem', color:'#f0f0f8', marginBottom:8 }}>
+              <h3 style={{ fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:'1.35rem', color:'#f0f0f8', marginBottom:8 }}>
                 Reset Seluruh Quiz?
               </h3>
               <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif', fontSize:'0.9rem', lineHeight:1.6 }}>
@@ -156,14 +134,14 @@ export default function QuizApp() {
             <div className="flex gap-3 w-full">
               <button onClick={handleResetCancel}
                 className="flex-1 py-3 rounded-xl text-sm font-bold"
-                style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.12)', color:'#9898b8', cursor:'pointer', fontFamily:'Syne,sans-serif', transition:'all 0.2s' }}
+                style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.12)', color:'#9898b8', cursor:'pointer', fontFamily:'Poppins,sans-serif', transition:'all 0.2s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color='#f0f0f8'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color='#9898b8'; }}>
                 Batal
               </button>
               <button onClick={handleResetConfirm}
                 className="flex-1 py-3 rounded-xl text-sm font-bold text-white"
-                style={{ background:'linear-gradient(135deg,#ff6b6b,#ee2244)', border:'none', cursor:'pointer', fontFamily:'Syne,sans-serif', fontWeight:800, boxShadow:'0 6px 20px rgba(255,107,107,0.4)', transition:'all 0.2s' }}
+                style={{ background:'linear-gradient(135deg,#ff6b6b,#ee2244)', border:'none', cursor:'pointer', fontFamily:'Poppins,sans-serif', fontWeight:800, boxShadow:'0 6px 20px rgba(255,107,107,0.4)', transition:'all 0.2s' }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform='translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow='0 10px 28px rgba(255,107,107,0.55)'; }}
                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform=''; (e.currentTarget as HTMLElement).style.boxShadow='0 6px 20px rgba(255,107,107,0.4)'; }}>
                 🔄 Ya, Reset!
@@ -172,6 +150,24 @@ export default function QuizApp() {
           </div>
         </div>
       )}
+
+      {/* ── Fixed bottom-right reset FAB ── */}
+      <div className="fixed z-40" style={{ bottom:28, right:28, display:'flex', flexDirection:'column', alignItems:'flex-end', gap:8 }}>
+        {totalUsed > 0 && (
+          <div style={{ background:'rgba(10,10,20,0.85)', backdropFilter:'blur(8px)', border:'1px solid rgba(77,150,255,0.25)', color:'#4d96ff', fontFamily:'Space Mono,monospace', fontSize:'0.7rem', padding:'4px 10px', borderRadius:99 }}>
+            ✓ {totalUsed} soal terpakai
+          </div>
+        )}
+        <button
+          onClick={handleResetClick}
+          title="Reset seluruh quiz dari awal"
+          style={{ background:'rgba(255,107,107,0.15)', backdropFilter:'blur(10px)', border:'1.5px solid rgba(255,107,107,0.45)', color:'#ff6b6b', cursor:'pointer', fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'0.85rem', padding:'10px 18px', borderRadius:99, display:'flex', alignItems:'center', gap:6, transition:'all 0.2s', boxShadow:'0 4px 20px rgba(255,107,107,0.2)' }}
+          onMouseEnter={e => { const el = e.currentTarget as HTMLElement; el.style.background='rgba(255,107,107,0.28)'; el.style.boxShadow='0 8px 28px rgba(255,107,107,0.35)'; el.style.transform='translateY(-2px)'; }}
+          onMouseLeave={e => { const el = e.currentTarget as HTMLElement; el.style.background='rgba(255,107,107,0.15)'; el.style.boxShadow='0 4px 20px rgba(255,107,107,0.2)'; el.style.transform=''; }}
+        >
+          🔄 Reset
+        </button>
+      </div>
 
       <style jsx global>{`
         @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:0.8} }
@@ -182,19 +178,37 @@ export default function QuizApp() {
   );
 }
 
+// Stars: generated only on client to avoid SSR/hydration mismatch
 function Stars() {
-  const stars = Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    top: `${Math.random() * 100}%`, left: `${Math.random() * 100}%`,
-    size: Math.random() * 2 + 1,
-    duration: Math.random() * 4 + 2, delay: Math.random() * 4,
-  }));
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+
+  // Deterministic pseudo-random values seeded by index — same on every render
+  const stars = useMemo(() => {
+    const lcg = (s: number) => ((s * 1664525 + 1013904223) & 0x7fffffff) / 0x7fffffff;
+    return Array.from({ length: 50 }, (_, i) => ({
+      id:       i,
+      top:      `${lcg(i * 4 + 1) * 100}%`,
+      left:     `${lcg(i * 4 + 2) * 100}%`,
+      size:     lcg(i * 4 + 3) * 2 + 1,
+      duration: lcg(i * 4 + 4) * 4 + 2,
+      delay:    lcg(i * 4 + 5) * 4,
+    }));
+  }, []);
+
+  if (!mounted) return null;
+
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden">
       {stars.map(s => (
         <div key={s.id} className="absolute rounded-full bg-white"
-          style={{ top:s.top, left:s.left, width:`${s.size}px`, height:`${s.size}px`, opacity:0.1,
-            animation:`twinkle ${s.duration}s ease-in-out infinite ${s.delay}s` }} />
+          style={{
+            top: s.top, left: s.left,
+            width: `${s.size}px`, height: `${s.size}px`,
+            opacity: 0.1,
+            animation: `twinkle ${s.duration}s ease-in-out infinite ${s.delay}s`,
+          }}
+        />
       ))}
     </div>
   );

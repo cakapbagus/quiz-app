@@ -7,22 +7,29 @@ import {
 interface RawQuestion {
   tipe: string; soal: string;
   pg_a: string; pg_b: string; pg_c: string; pg_d: string;
-  jawaban: string; waktu: number;
+  jawaban: string | number;
+  waktu: number;
 }
 type BankSoal = Record<string, [Record<string, RawQuestion[]>]>;
 
 async function loadBank(req: NextRequest): Promise<BankSoal> {
-  // Fetch from the /api/bank proxy (GAS) using an absolute URL
-  const origin = req.headers.get('origin') ?? `http://localhost:${process.env.PORT ?? 3000}`;
+  // Try the /api/bank proxy (GAS) first
+  const baseUrl = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : req.headers.get('origin') ?? `http://localhost:${process.env.PORT ?? 3000}`;
+
   try {
-    const r = await fetch(`${origin}/api/bank`, { next: { revalidate: 300 } });
-    if (r.ok) return await r.json();
+    const r = await fetch(`${baseUrl}/api/bank`, { next: { revalidate: 300 } });
+    if (r.ok) {
+      const data = await r.json();
+      if (data && typeof data === 'object' && !data.error) return data;
+    }
   } catch { /* fall through to local */ }
 
   // Fallback: local public/bank_soal.json
   const { readFile } = await import('fs/promises');
   const path = await import('path');
-  const raw = await readFile(path.join(process.cwd(), 'public', 'bank_soal.json'), 'utf-8');
+  const raw  = await readFile(path.join(process.cwd(), 'public', 'bank_soal.json'), 'utf-8');
   return JSON.parse(raw);
 }
 
@@ -51,7 +58,7 @@ export async function GET(req: NextRequest) {
   const allIndices  = pool.map((_, i) => i);
   let   available   = allIndices.filter(i => !usedIndices.includes(i));
 
-  // All exhausted → reset for this slot
+  // All exhausted → reset cycle for this slot
   if (available.length === 0) {
     available = allIndices;
     if (session.usedQuestions[category]) session.usedQuestions[category][difficulty] = [];
@@ -66,20 +73,23 @@ export async function GET(req: NextRequest) {
     pickedIndex,
   ];
 
-  session.state         = 'question';
-  session.category      = category;
-  session.difficulty    = difficulty;
-  session.questionIndex = pickedIndex;
+  session.state          = 'question';
+  session.category       = category;
+  session.difficulty     = difficulty;
+  session.questionIndex  = pickedIndex;
   session.timerStartedAt = null;
   session.timerDuration  = question.waktu;
 
   const newToken = await signSession(session);
-  const res = NextResponse.json({
+  const res      = NextResponse.json({
     question,
     questionIndex: pickedIndex,
-    remaining:    available.length - 1,
-    totalInPool:  pool.length,
+    remaining:     available.length - 1,
+    totalInPool:   pool.length,
   });
-  res.cookies.set({ name: COOKIE_NAME, value: newToken, httpOnly: true, sameSite: 'lax', path: '/', maxAge: MAX_AGE });
+  res.cookies.set({
+    name: COOKIE_NAME, value: newToken,
+    httpOnly: true, sameSite: 'lax', path: '/', maxAge: MAX_AGE,
+  });
   return res;
 }
