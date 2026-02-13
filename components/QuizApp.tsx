@@ -110,12 +110,10 @@ export default function QuizApp() {
 
       {/* ── Reset confirmation modal ── */}
       {showResetConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background:'rgba(0,0,0,0.8)', backdropFilter:'blur(12px)' }}>
-          <div className="rounded-2xl p-8 flex flex-col items-center gap-5 text-center"
-            style={{ background:'#1a1a2e', border:'1px solid rgba(255,107,107,0.3)', maxWidth:420, width:'100%', boxShadow:'0 32px 64px rgba(0,0,0,0.5)', animation:'popIn 0.35s cubic-bezier(0.34,1.56,0.64,1)' }}>
+        <div className="modal-overlay">
+          <div className="modal-box" style={{ maxWidth: 600, maxHeight: '92vh', overflowY: 'auto' }}>
             <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl"
-              style={{ background:'rgba(255,107,107,0.15)', border:'2px solid rgba(255,107,107,0.4)' }}>
+                style={{ background:'rgba(255,107,107,0.15)', border:'2px solid rgba(255,107,107,0.4)' }}>
               ⚠️
             </div>
             <div>
