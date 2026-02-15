@@ -498,16 +498,33 @@ export default function QuizApp() {
 
       {/* Reset FAB */}
       <div
-        className="fixed z-40"
-        style={{
-          bottom: 28,
-          right: 18,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-          gap: 4,
-        }}
+      // className="fixed bottom-12 left-12 z-10 flex flex-row gap-4"
+        className="flex flex-row m-auto justify-center items-center"
+        style={{gap: 10, marginBottom: 32 }}
       >
+        {/* Credits */}
+        <a href="https://github.com/cakapbagus/quiz-app"
+        style={{
+          background: 'rgba(107, 117, 255, 0.15)',
+          backdropFilter: 'blur(10px)',
+          border: '1.5px solid rgba(107, 110, 255, 0.45)',
+          color: '#5b50fc',
+          cursor: 'pointer',
+          fontFamily: 'Poppins,sans-serif',
+          fontWeight: 700,
+          fontSize: '0.85rem',
+          padding: '2px 6px',
+          borderRadius: 99,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          transition: 'all 0.2s',
+          boxShadow: '0 4px 20px rgba(117, 107, 255, 0.2)',
+          textDecoration: 'none',
+        }}>
+          © Github
+        </a>
+
         {totalUsed > 0 && (
           <div
             style={{
@@ -524,6 +541,7 @@ export default function QuizApp() {
             ✓ {totalUsed} soal terpakai
           </div>
         )}
+        
         <button
           onClick={() => setShowResetConfirm(true)}
           title="Reset seluruh quiz dari awal"
@@ -547,23 +565,6 @@ export default function QuizApp() {
         >
           🔄 Reset
         </button>
-      </div>
-
-      {/* Credits */}
-      <div
-        className="fixed z-40"
-        style={{
-          bottom: 28,
-          left: 18,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-end',
-        }}
-      >
-        <a href="https://github.com/cakapbagus/quiz-app"
-        style={{ color: '#4d96ff', fontFamily: 'Poppins,sans-serif', fontSize: '0.8rem' }}>
-          Github
-        </a>
       </div>
 
       <style jsx global>{`

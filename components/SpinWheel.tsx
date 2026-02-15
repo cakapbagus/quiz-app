@@ -215,7 +215,7 @@ export default function SpinWheel({
         <div className="absolute z-20" style={{ top: -4, left: '50%', transform: 'translateX(-50%)' }}>
           <svg width="36" height="48" viewBox="0 0 36 48" style={{ filter: 'drop-shadow(0 0 8px #ffd93d)' }}>
             {/* Arrow pointing DOWN into the wheel */}
-            <polygon points="18,42 4,8 18,18 32,8" fill="#ffd93d" stroke="#0a0a14" strokeWidth="2.5" strokeLinejoin="round" />
+            <polygon points="18,28 6,6 18,8 30,6" fill="#ffd93d" stroke="#0a0a14" strokeWidth="2" strokeLinejoin="round" />
           </svg>
         </div>
 
@@ -257,13 +257,13 @@ export default function SpinWheel({
                 <g key={i} transform={`rotate(${p.rot},${p.x},${p.y})`} filter="url(#textShadow)">
                   {words.length === 1 ? (
                     <text x={p.x} y={p.y} textAnchor="middle" dominantBaseline="middle"
-                      fill="white" fontSize="16" fontFamily="Poppins,sans-serif" fontWeight="600">{cat}</text>
+                      fill="white" fontSize="18" fontFamily="Poppins,sans-serif" fontWeight="600">{cat}</text>
                   ) : (
                     <>
                       <text x={p.x} y={p.y - 7} textAnchor="middle" dominantBaseline="middle"
-                        fill="white" fontSize="14" fontFamily="Poppins,sans-serif" fontWeight="600">{words[0]}</text>
+                        fill="white" fontSize="16" fontFamily="Poppins,sans-serif" fontWeight="600">{words[0]}</text>
                       <text x={p.x} y={p.y + 8} textAnchor="middle" dominantBaseline="middle"
-                        fill="white" fontSize="14" fontFamily="Poppins,sans-serif" fontWeight="600">{words.slice(1).join(' ')}</text>
+                        fill="white" fontSize="16" fontFamily="Poppins,sans-serif" fontWeight="600">{words.slice(1).join(' ')}</text>
                     </>
                   )}
                 </g>

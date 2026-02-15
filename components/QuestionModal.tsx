@@ -141,7 +141,7 @@ export default function QuestionModal({
 
             <div className="flex justify-center items-center gap-3">
               <ActionBtn onClick={onBack} gradient="linear-gradient(135deg,#555,#333)" shadow="rgba(0,0,0,0.3)">
-                ← Kembali
+                ←&nbsp; Kembali
               </ActionBtn>
               <ActionBtn onClick={handleStart} gradient="linear-gradient(135deg,#4d96ff,#c77dff)" shadow="rgba(77,150,255,0.4)">
                 ▶&nbsp; Mulai!
@@ -359,7 +359,7 @@ function ActionBtn({ children, onClick, gradient, shadow, dark = false }: {
   return (
     <button onClick={onClick}
       style={{ background:gradient, border:'none', cursor:'pointer', fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:'1.05rem',
-        color: dark ? '#0a0a14' : 'white', padding:'14px 52px', borderRadius:'100px',
+        color: dark ? '#0a0a14' : 'white', padding:'14px 50px', borderRadius:'30px', marginLeft:'30px',marginRight:'30px',
         transition:'all 0.3s', boxShadow:`0 8px 24px ${shadow}` }}
       onMouseEnter={e => { const el=e.currentTarget as HTMLElement; el.style.transform='translateY(-3px) scale(1.03)'; el.style.boxShadow=`0 14px 36px ${shadow}`; }}
       onMouseLeave={e => { const el=e.currentTarget as HTMLElement; el.style.transform=''; el.style.boxShadow=`0 8px 24px ${shadow}`; }}>
