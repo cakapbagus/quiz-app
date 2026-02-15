@@ -182,7 +182,7 @@ export default function SpinWheel({
   const selColor = selectedIdx !== null ? SEG_COLORS[selectedIdx] : null;
 
   return (
-    <div className="flex flex-col items-center w-full" style={{ maxWidth: 700, gap: 0, paddingBottom: 32 }}>
+    <div className="flex flex-col items-center w-full" style={{ maxWidth: 700, paddingBottom: 32 }}>
 
       {/* ── Title ── */}
       <div className="text-center mb-8">
@@ -198,7 +198,7 @@ export default function SpinWheel({
 
       {/* ── Wheel container ── */}
       <div className="relative flex items-center justify-center w-full"
-        style={{ maxWidth: 520, aspectRatio: '1', margin: '0 auto' }}>
+        style={{ maxWidth: 510, aspectRatio: '1', margin: '0 auto' }}>
 
         {/* Glow */}
         <div className="absolute inset-0 rounded-full pointer-events-none" style={{
@@ -308,12 +308,12 @@ export default function SpinWheel({
       {/* ── Result: category + difficulty buttons ── */}
       {!isSpinning && selectedIdx !== null && selCat && selColor && (
         <div className="flex flex-col items-center w-full mt-10"
-          style={{ gap: 20, animation: 'resultReveal 0.45s cubic-bezier(0.34,1.56,0.64,1)' }}>
+          style={{ gap: 5, animation: 'resultReveal 0.45s cubic-bezier(0.34,1.56,0.64,1)' }}>
 
           {/* Category banner */}
           <div className="flex items-center gap-4 px-7 py-4 rounded-2xl"
             style={{ background:`${selColor[0]}16`, border:`2px solid ${selColor[0]}44`, width:'100%', maxWidth:500, justifyContent:'center' }}>
-            <span style={{ fontSize: '2.4rem' }}>{CAT_ICONS[selectedIdx]}</span>
+            <span style={{ fontSize: '2.2rem' }}>{CAT_ICONS[selectedIdx]}</span>
             <div>
               <div style={{ fontFamily:'Poppins,sans-serif', fontWeight:800, fontSize:'clamp(1.2rem,4vw,1.6rem)', color:selColor[0], lineHeight:1.2 }}>
                 {selCat}
@@ -327,7 +327,7 @@ export default function SpinWheel({
           </div>
 
           {/* Difficulty label */}
-          <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif', fontSize:'0.95rem' }}>
+          <p style={{ color:'#9898b8', fontFamily:'Nunito,sans-serif', fontSize:'0.95rem'}}>
             Pilih tingkat kesulitan:
           </p>
 
@@ -344,7 +344,7 @@ export default function SpinWheel({
                 <button key={d.key} disabled={disabled} onClick={() => pickDiff(d.key)}
                   className="flex flex-col items-center py-5 px-3 rounded-2xl"
                   style={{
-                    gap: 10,
+                    gap: 5,
                     background: disabled ? 'rgba(255,255,255,0.02)' : 'rgba(255,255,255,0.05)',
                     border: `2px solid ${disabled ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.1)'}`,
                     cursor: disabled ? 'not-allowed' : 'pointer',
@@ -369,7 +369,7 @@ export default function SpinWheel({
                   }}
                 >
                   {/* Emoji — no background wrapper */}
-                  <span style={{ fontSize: '2.2rem', lineHeight: 1 }}>{d.emoji}</span>
+                  <span style={{ fontSize: '1.5rem', lineHeight: 1, marginBottom: 0 }}>{d.emoji}</span>
                   <span style={{ fontFamily:'Poppins,sans-serif', fontWeight:700, fontSize:'1rem', color: disabled ? '#555' : '#f0f0f8' }}>
                     {d.label}
                   </span>
