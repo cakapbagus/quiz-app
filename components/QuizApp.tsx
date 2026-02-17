@@ -542,29 +542,31 @@ export default function QuizApp() {
           </div>
         )}
         
-        <button
-          onClick={() => setShowResetConfirm(true)}
-          title="Reset seluruh quiz dari awal"
-          style={{
-            background: 'rgba(255,107,107,0.15)',
-            backdropFilter: 'blur(10px)',
-            border: '1.5px solid rgba(255,107,107,0.45)',
-            color: '#ff6b6b',
-            cursor: 'pointer',
-            fontFamily: 'Poppins,sans-serif',
-            fontWeight: 700,
-            fontSize: '0.85rem',
-            padding: '2px 6px',
-            borderRadius: 99,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            transition: 'all 0.2s',
-            boxShadow: '0 4px 20px rgba(255,107,107,0.2)',
-          }}
-        >
-          🔄 Reset
+        {totalUsed > 0 && (
+          <button
+            onClick={() => setShowResetConfirm(true)}
+            title="Reset seluruh quiz dari awal"
+            style={{
+              background: 'rgba(255,107,107,0.15)',
+              backdropFilter: 'blur(10px)',
+              border: '1.5px solid rgba(255,107,107,0.45)',
+              color: '#ff6b6b',
+              cursor: 'pointer',
+              fontFamily: 'Poppins,sans-serif',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              padding: '2px 6px',
+              borderRadius: 99,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'all 0.2s',
+              boxShadow: '0 4px 20px rgba(255,107,107,0.2)',
+            }}
+          >
+            🔄 Reset
         </button>
+        )}
       </div>
 
       <style jsx global>{`
